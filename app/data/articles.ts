@@ -65,8 +65,7 @@ export const articles: Article[] = [
     excerpt: "From tacos to tech, Austin’s mix of music, food, and startups makes it uniquely Texan.",
     hasMap: true,
     lnglat: [-97.7431, 30.2672],
-    bbox: [[-97.9368, 30.0988], // SW
-  [-97.5684, 30.5169]],
+    bbox: [[-97.9368, 30.0988], [-97.5684, 30.5169]],
     content: `
         Austin, Texas, has earned its reputation as the Live Music Capital of the World.
         Every night of the week, bars and venues spill out blues, rock, and indie beats
