@@ -10,7 +10,6 @@ export default function Mapping({ article }) {
     useEffect(() => {
         if (!mapContainer.current) return;
 
-        // Initialize map
         const map = new maplibregl.Map({
         container: mapContainer.current,
         style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=ZLi0vxKp10mvDCBQCwjK',
@@ -18,6 +17,9 @@ export default function Mapping({ article }) {
         center: article.lnglat,
         zoom: 6
         });
+
+         map.fitBounds(article.bbox);
+         console.log(article)
 
         return () => map.remove(); 
     })

@@ -2,7 +2,8 @@ export interface Article {
   id: string;
   title: string;
   hasMap: boolean,
-  lnglat: Array,
+  lnglat: [number, number],
+  bbox: [[number, number], [number, number]],
   excerpt: string;
   content: string;
 }
@@ -13,6 +14,7 @@ export const articles: Article[] = [
     title: "Discovering Denver: The Mile High City",
     hasMap: true,
     lnglat: [-104.9903, 39.7392],
+    bbox: [[-105.1099, 39.6144], [-104.5991, 39.9142]],
     excerpt: "A quick journey into the Mile High City — where urban life meets the Rocky Mountains.",
     content: `
         Denver, Colorado, sits exactly one mile above sea level and offers a rare mix of
@@ -35,6 +37,7 @@ export const articles: Article[] = [
     title: "Seattle: Innovation Meets the Outdoors",
     hasMap: true,
     lnglat: [-122.3321, 47.6062],
+    bbox: [  [-122.4597, 47.4810], [-122.2244, 47.7341]],
     excerpt: "Exploring Seattle’s blend of tech culture, waterfront charm, and Pacific Northwest landscapes.",
     content: `
         Seattle, Washington, is a city defined by water, mountains, and forward-thinking
@@ -58,6 +61,8 @@ export const articles: Article[] = [
     excerpt: "From tacos to tech, Austin’s mix of music, food, and startups makes it uniquely Texan.",
     hasMap: true,
     lnglat: [-97.7431, 30.2672],
+    bbox: [[-97.9368, 30.0988], // SW
+  [-97.5684, 30.5169]],
     content: `
         Austin, Texas, has earned its reputation as the Live Music Capital of the World.
         Every night of the week, bars and venues spill out blues, rock, and indie beats
