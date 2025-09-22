@@ -18,7 +18,36 @@ export default function Mapping({ article }) {
         zoom: 6
         });
 
-         map.fitBounds(article.bbox);
+        map.fitBounds(article.bbox);
+
+        map.on("load", () => {
+            const labelLayers = [
+                "Continent labels",
+                "Country labels",
+                "State labels",
+                "City labels",
+                "Capital city labels",
+                "Town labels",
+                "Place labels",
+                "Ocean labels",
+                "River labels",
+                "Lake labels",
+                "Road labels"
+            ];
+
+
+            labelLayers.forEach(layerId => {
+                if (map.getLayer(layerId)) {
+                    map.setLayoutProperty(layerId, "text-field", [
+                        "coalesce",
+                        ["get", `name:${article.language}`],
+                        ["get", "name"]
+                    ]);
+                }
+            });
+        });
+
+      
          console.log(article)
 
         return () => map.remove(); 

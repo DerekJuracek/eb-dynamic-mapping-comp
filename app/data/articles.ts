@@ -1,6 +1,7 @@
 export interface Article {
   id: string;
   title: string;
+  language: string;
   hasMap: boolean,
   lnglat: [number, number],
   bbox: [[number, number], [number, number]],
@@ -12,6 +13,7 @@ export const articles: Article[] = [
   {
     id: "1",
     title: "Discovering Denver: The Mile High City",
+    language: 'en',
     hasMap: true,
     lnglat: [-104.9903, 39.7392],
     bbox: [[-105.1099, 39.6144], [-104.5991, 39.9142]],
@@ -35,6 +37,7 @@ export const articles: Article[] = [
   {
     id: "2",
     title: "Seattle: Innovation Meets the Outdoors",
+    language: 'es',
     hasMap: true,
     lnglat: [-122.3321, 47.6062],
     bbox: [  [-122.4597, 47.4810], [-122.2244, 47.7341]],
@@ -58,6 +61,7 @@ export const articles: Article[] = [
   {
     id: "3",
     title: "Austin: The Live Music Capital",
+    language: 'fr',
     excerpt: "From tacos to tech, Austin’s mix of music, food, and startups makes it uniquely Texan.",
     hasMap: true,
     lnglat: [-97.7431, 30.2672],
