@@ -81,5 +81,32 @@ export const articles: Article[] = [
         Pool and Lady Bird Lake still offer escapes for locals and visitors to cool off
         under the Texas sun.
     `
-  }
+  },
+  {
+  id: "4",
+  title: "Delhi: The Heart of India",
+  language: 'hi',
+  excerpt: "Where centuries of history meet a fast-growing modern capital, Delhi captures the essence of India.",
+  hasMap: true,
+  lnglat: [77.2090, 28.6139],
+  bbox: [[76.8376, 28.4040], [77.3828, 28.8832]],
+  content: `
+      Delhi, India’s capital, is a city layered with history. Ancient walls and Mughal
+      forts stand alongside colonial boulevards and glass towers, each narrating a chapter
+      of the city’s evolving story.
+
+      At its heart is Old Delhi — with the Red Fort, Jama Masjid, and the bustling lanes of
+      Chandni Chowk, where spices, sweets, and textiles crowd every corner. In contrast,
+      New Delhi offers wide avenues, government buildings, and modern districts like
+      Connaught Place.
+
+      The food culture is as diverse as the city itself: butter chicken, street-side
+      chaat, parathas, and Mughlai kebabs are must-tastes. Festivals like Diwali and Holi
+      light up neighborhoods with color, music, and celebration.
+
+      Today, Delhi is not only a political capital but also a cultural and technological
+      hub, linking the traditions of India’s past with the possibilities of its future.
+  `
+}
+
 ];
