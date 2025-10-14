@@ -96,11 +96,13 @@ export default function Mapping({ article } : { article: Article }) {
 
       // Add popup on click
       map.on('click', 'city-points', (e) => {
-        const name = e.features[0].properties.site_url;
-        new maplibregl.Popup()
-          .setLngLat(e.lngLat)
-          .setHTML(popupHTML)
-          .addTo(map);
+        if (e.features && e.features.length > 0) {
+          const name = e.features[0].properties.site_url;
+          new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupHTML)
+            .addTo(map);
+        }
       });
 
         map.on('mouseenter', 'city-points', () => map.getCanvas().style.cursor = 'pointer');
