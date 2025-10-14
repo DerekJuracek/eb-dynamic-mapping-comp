@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "eb_locations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "denver", "location": "denver", "show": true, "zoom": 9, "lang": "en", "top_article": true, "site_url": "https://www.britannica.com/art/Lollapalooza", "unique_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -104.9903, 39.7392 ] } },
+{ "type": "Feature", "properties": { "name": "austin", "location": "austin", "show": true, "zoom": 9, "lang": "fr", "top_article": true, "site_url": "https://www.britannica.com/art/Lollapalooza", "unique_id": 3 }, "geometry": { "type": "Point", "coordinates": [ -97.7431, 30.2672 ] } },
+{ "type": "Feature", "properties": { "name": "seattle", "location": "seattle", "show": true, "zoom": 9, "lang": "es", "top_article": true, "site_url": "https://www.britannica.com/art/Lollapalooza", "unique_id": 2 }, "geometry": { "type": "Point", "coordinates": [ -122.3321, 47.6062 ] } },
+{ "type": "Feature", "properties": { "name": "india", "location": "delhi", "show": true, "zoom": 9, "lang": "hi", "top_article": true, "site_url": "https://www.britannica.com/art/Lollapalooza", "unique_id": 4 }, "geometry": { "type": "Point", "coordinates": [ 77.209, 28.6139 ] } },
+{ "type": "Feature", "properties": { "name": "chicago", "location": "chicago", "show": true, "zoom": 8, "lang": "es", "top_article": true, "site_url": "https://www.brita", "unique_id": 5 }, "geometry": { "type": "Point", "coordinates": [ -87.6298, 41.8781 ] } }
+]
+}

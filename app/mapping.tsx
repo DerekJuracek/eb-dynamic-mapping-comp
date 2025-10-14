@@ -35,6 +35,8 @@ export default function Mapping({ article } : { article: Article }) {
 
         map.fitBounds(article.bbox);
 
+       
+
         map.on("load", () => {
             const labelLayers = [
                 "Continent labels",
@@ -61,9 +63,50 @@ export default function Mapping({ article } : { article: Article }) {
                 }
             });
         });
+        map.on('load', () => {
+            map.addSource('eb', {
+                type: "geojson",
+                data: '/gis/eb_locations.geojson'
+                
+            });
 
-      
-         console.log(article)
+         map.addLayer({
+            id: 'city-points',
+            type: 'circle',
+            source: 'eb',
+            paint: {
+            'circle-radius': 7,
+            'circle-color': '#0078ff',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff'
+            },
+        })
+
+         const popupHTML = `
+            <div class="popup-card">
+            <div class="popup-title">Lollapalooza</div>
+            <div class="popup-subtitle">Chicago, Illinois</div>
+            <strong><a href="https://www.britannica.com/art/Lollapalooza" target="_blank" class="popup-link">
+                View Britannica Article
+            </a>
+            </strong>
+            </div>
+        `;
+     
+
+      // Add popup on click
+      map.on('click', 'city-points', (e) => {
+        const name = e.features[0].properties.site_url;
+        new maplibregl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(popupHTML)
+          .addTo(map);
+      });
+
+        map.on('mouseenter', 'city-points', () => map.getCanvas().style.cursor = 'pointer');
+        map.on('mouseleave', 'city-points', () => map.getCanvas().style.cursor = '');
+    
+        })
 
         return () => map.remove(); 
     })

@@ -24,3 +24,56 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.maplibregl-popup-content {
+   box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.15); /* Google Maps-style layered shadow */
+  border-radius: 10px !important;
+}
+
+.maplibregl-popup-close-button {
+  width: 20px !important;
+  padding-top: 5px !important;
+}
+
+/* Popup container */
+  .popup-card {
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    min-width: 220px;
+    border-radius: 10px;
+    background: white;
+
+  }
+
+  /* Title (main name) */
+  .popup-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1c1c1c;
+    margin-bottom: 4px;
+  }
+
+  /* Subtitle or secondary text */
+  .popup-subtitle {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  /* Article link button */
+  .popup-link {
+    display: inline-block;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #0078ff;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .popup-link:hover {
+    background-color: #005fcc;
+  }

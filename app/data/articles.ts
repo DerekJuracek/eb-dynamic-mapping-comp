@@ -107,6 +107,33 @@ export const articles: Article[] = [
       Today, Delhi is not only a political capital but also a cultural and technological
       hub, linking the traditions of India’s past with the possibilities of its future.
   `
+}, 
+{
+  id: "5",
+  title: "Chicago: The Windy City",
+  language: 'en',
+  hasMap: true,
+  lnglat: [-87.6298, 41.8781],
+  bbox: [[-87.9401, 41.6445], [-87.5239, 42.0230]],
+  excerpt: "Chicago blends architecture, music, and culture on the shores of Lake Michigan — a city where innovation meets Midwestern charm.",
+  content: `
+      Chicago, Illinois, stands tall on the southwestern shores of Lake Michigan and is
+      renowned for its skyline, deep-dish pizza, and architectural legacy. Known as the
+      “Windy City,” it’s home to iconic landmarks like the Willis Tower, Millennium Park,
+      and the Cloud Gate sculpture — affectionately called “The Bean.”
+
+      The city’s neighborhoods each tell a different story: from the jazz clubs of
+      Bronzeville and murals of Pilsen to the upscale restaurants of River North.
+      Chicago’s cultural heartbeat pulses through its festivals — none more famous than
+      Lollapalooza, the annual music festival in Grant Park that draws visitors from
+      around the world.
+
+      Beyond its arts and food, Chicago’s history is tied to innovation and resilience —
+      rebuilt after the Great Fire of 1871, it became a model for modern urban planning.
+      Today, the city continues to balance progress and tradition, where a walk along the
+      lakefront reveals both world-class architecture and classic Midwest warmth.
+  `
 }
+
 
 ];

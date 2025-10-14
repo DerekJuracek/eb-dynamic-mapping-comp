@@ -1,5 +1,6 @@
 import ArticleCard from "./articlecard";
 import { articles } from "./data/articles";
+import './globals.css'
 
 export default function HomePage() {
   return (
