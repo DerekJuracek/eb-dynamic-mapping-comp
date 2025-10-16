@@ -3,7 +3,7 @@ import pandas as pd
 import geopandas as gpd
 from datetime import datetime
 
-gmaps = googlemaps.Client(key='AIzaSyC5UVpf6Zs7vWw4Pa_XXnoinoePOSR4iAQ')
+
 
 # geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
 
@@ -13,7 +13,6 @@ df = pd.read_csv('../app/data/map_locations.csv')
 
 titles = df["title"]
 title_dict = titles.to_dict()
-
 results = []
 
 for i,v in title_dict.items():
@@ -31,8 +30,6 @@ for i,v in title_dict.items():
         result["formatted_address"] = geocode_result[0]['formatted_address']
         result["place_id"] = geocode_result[0]['place_id']
         results.append(result)
-
-        # print(results)
 
 if len(results) > 0:
     df = pd.DataFrame(results)
