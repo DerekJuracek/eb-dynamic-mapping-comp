@@ -66,7 +66,7 @@ export default function Mapping({ article } : { article: Article }) {
         map.on('load', () => {
             map.addSource('eb', {
                 type: "geojson",
-                data: '/gis/eb_locations.geojson'
+                data: '/gis/eb_locations_all.geojson'
                 
             });
 
