@@ -11,13 +11,9 @@ interface Props {
 export default function ArticlePage({ params }: Props) {
   const article = articles.find(a => a.id === params.id);
   const id = params.id;
-
   const [hasLocation, setHasLocation] = useState(false);
   const [data, setData] = useState(null);
 
-  if (!article) {
-    return <h1 className="text-center mt-10 text-red-600">Article not found</h1>;
-  }
 
   useEffect(() => {
     fetch('/api/getLocation', {
@@ -30,6 +26,7 @@ export default function ArticlePage({ params }: Props) {
     .then(response => response.json())
     .then(data => {
       if (data) {
+        console.log(data)
         setHasLocation(true);
         setData(data);
       } else {
@@ -43,11 +40,15 @@ export default function ArticlePage({ params }: Props) {
     });
   }, [])
 
+    if (!article) {
+    return <h1 className="text-center mt-10 text-red-600">Article not found</h1>;
+  }
+
   return (
     <main className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
       <p className="text-gray-700">{article.content}</p>
-      {data ? <Mapping article={article} articledata={data}/> 
+      {article ? <Mapping article={article} /> 
       : ''}
     </main>
   );

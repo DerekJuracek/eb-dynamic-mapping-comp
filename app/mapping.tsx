@@ -7,7 +7,7 @@ import turf from 'turf';
 import wellknown from 'wellknown';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-export default function Mapping({ article, articledata } : { article: Article, articledata: any }) {
+export default function Mapping({ article } : { article: Article }) {
     const mapContainer = useRef<HTMLDivElement | null>(null);
     const [origin, setOrigin] = useState('default')
     const [currentMap, setCurrentMap] = useState('')
@@ -62,7 +62,7 @@ export default function Mapping({ article, articledata } : { article: Article, a
                 if (map.getLayer(layerId)) {
                     map.setLayoutProperty(layerId, "text-field", [
                         "coalesce",
-                        ["get", `name:${articledata.lang}`],
+                        ["get", `name:'en'`],
                         ["get", "name"]
                     ]);
                 }
