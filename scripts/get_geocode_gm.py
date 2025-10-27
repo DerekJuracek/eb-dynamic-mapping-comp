@@ -10,33 +10,38 @@ gmaps = googlemaps.Client(key='AIzaSyC5UVpf6Zs7vWw4Pa_XXnoinoePOSR4iAQ')
 
 # this can be uploaded to a database or saved as a postgis table to ingest
 # keep as csv for now
-df = pd.read_csv('../app/data/map_locations.csv')
+df = pd.read_csv('../app/data/map_locations_edited.csv')
 print(df.head())
 
 titles = df["title"]
 title_dict = titles.to_dict()
 results = []
-
-for i, v in title_dict.items():
+for i, row in df.iterrows():
+    title = row['title']
+    identifier = row['identifier']
+    geocode_val = f"{title}, {identifier}"
     
-    print(i, v)
-    # if i == 0:
-    geocode_result = gmaps.geocode(v)
+    geocode_result = gmaps.geocode(geocode_val)
+    failed_geocodes = []
+
     if geocode_result:
         result = {}
-        result['title'] = v
+        result['title'] = title
+        result['identifier'] = identifier
         result['name'] = geocode_result[0]["address_components"][0]['long_name']
         result["geom"] = geocode_result[0]['geometry']['location']
         result["bbox"] = geocode_result[0]['geometry']['viewport']
         result["formatted_address"] = geocode_result[0]['formatted_address']
         result["place_id"] = geocode_result[0]['place_id']
         result["url"] = df['URL'].iloc[i]
-        
         results.append(result)
+    else:
+        failed_geocodes.append(geocode_val)
+        print(f"Geocode failed for: {geocode_val}")
 
 if len(results) > 0:
     df = pd.DataFrame(results)
-    print(df.head())
+    # print(df.head())
 
     # --- 1️⃣ Create point geometries ---
     df["point_geom"] = df["geom"].apply(lambda g: Point(g["lng"], g["lat"]))
@@ -51,6 +56,7 @@ if len(results) > 0:
                 b["northeast"]["lat"],
             ) if isinstance(b, dict) and "southwest" in b and "northeast" in b else None
         )
+        # print(df["bbox_geom"].head())
     else:
         df["bbox_geom"] = None
 
@@ -62,17 +68,7 @@ if len(results) > 0:
     )
 
 
-
-# if len(results) > 0:
-#     df = pd.DataFrame(results)
-#     print(df.head())
-# gdf = gpd.GeoDataFrame(
-#     df, geometry=gpd.points_from_xy(df['geometry'].apply(lambda x: x['lng']), df['geometry'].apply(lambda x: x['lat'])))
-
-
-    gdf.to_file('../public/gis/eb_locations_all.geojson', driver='GeoJSON')
- 
-
+    gdf.to_file('../public/gis/eb_locations_all_identifier.geojson', driver='GeoJSON')
     gdf.to_csv('map_locations.csv', index=False)
 # next work on converting to geojson
 # df to geodf then geojson with geopandas?

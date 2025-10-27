@@ -3,15 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from 'maplibre-gl';
 import type { Article } from "./data/articles";
+import turf from 'turf';
+import wellknown from 'wellknown';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-export default function Mapping({ article } : { article: Article }) {
+export default function Mapping({ article, articledata } : { article: Article, articledata: any }) {
     const mapContainer = useRef<HTMLDivElement | null>(null);
     const [origin, setOrigin] = useState('default')
     const [currentMap, setCurrentMap] = useState('')
 
     useEffect(() => {
-        
         if (origin == 'default' || origin == '') {
             setCurrentMap('https://api.maptiler.com/maps/019981be-496a-7bae-b225-a418c34d5d49/style.json?key=yyuND61jYywaYRD458Fx')
         } else if (origin == 'india') {
@@ -27,13 +28,17 @@ export default function Mapping({ article } : { article: Article }) {
         container: mapContainer.current,
         style: currentMap,
         // style: 'https://demotiles.maplibre.org/globe.json', // free demo style
-        center: article.lnglat,
-        zoom: 6
+        // center: articledata.lnglat,
+        // zoom: 6
         });
+map.on('load', () => {
+  map.fitBounds(article.bbox, {
+    padding: 40,
+    maxZoom: 9,
+    duration: 1500
+  });
+});
 
-        console.log(currentMap)
-
-        map.fitBounds(article.bbox);
 
        
 
@@ -57,7 +62,7 @@ export default function Mapping({ article } : { article: Article }) {
                 if (map.getLayer(layerId)) {
                     map.setLayoutProperty(layerId, "text-field", [
                         "coalesce",
-                        ["get", `name:${article.language}`],
+                        ["get", `name:${articledata.lang}`],
                         ["get", "name"]
                     ]);
                 }
@@ -66,7 +71,8 @@ export default function Mapping({ article } : { article: Article }) {
         map.on('load', () => {
             map.addSource('eb', {
                 type: "geojson",
-                data: '/gis/eb_locations_all.geojson'
+                data: '/gis/eb_locations_all_identifier.geojson'
+                // data: '/gis/eb_locations_all.geojson'
                 
             });
 
@@ -82,25 +88,45 @@ export default function Mapping({ article } : { article: Article }) {
             },
         })
 
+        function getPopupHTML(features: any) {
+
+        // Example: convert WKT → bbox
+        const wkt = features.properties.bbox_geom;
+        const geom = wellknown.parse(wkt);
+        const bbox = turf.bbox(geom);
+
+        // Now bbox = [minX, minY, maxX, maxY]
+        map.fitBounds([
+            [bbox[0], bbox[1]], // southwest
+            [bbox[2], bbox[3]]  // northeast
+        ]);
+        // map.fitBounds(features.properties.bbox_geom)
+            console.log('features', features);
          const popupHTML = `
             <div class="popup-card">
-            <div class="popup-title">Lollapalooza</div>
-            <div class="popup-subtitle">Chicago, Illinois</div>
-            <strong><a href="https://www.britannica.com/art/Lollapalooza" target="_blank" class="popup-link">
+            <div class="popup-title">${features.properties.title}</div>
+            <div class="popup-subtitle">${features.properties.formatted_address}</div>
+            <strong><a href="${features.properties.url}" target="_blank" class="popup-link">
                 View Britannica Article
             </a>
             </strong>
             </div>
         `;
-     
+            return popupHTML;
+        }
 
       // Add popup on click
       map.on('click', 'city-points', (e) => {
         if (e.features && e.features.length > 0) {
           const name = e.features[0].properties.site_url;
+          const geomString = e.features[0].properties.geom;
+          const geom = JSON.parse(geomString);
+
+        const lat = geom.lat;
+        const lng = geom.lng;
           new maplibregl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(popupHTML)
+            .setLngLat([lng, lat])
+            .setHTML(getPopupHTML(e.features[0]))
             .addTo(map);
         }
       });
@@ -114,7 +140,7 @@ export default function Mapping({ article } : { article: Article }) {
     })
   return (
    <div className="w-full h-64 bg-gray-300 flex items-center justify-center rounded-lg mt-6">
-       <div ref={mapContainer} className="w-full h-64 rounded-lg shadow-md" />;
+       <div ref={mapContainer} className="w-full h-64 rounded-lg shadow-md" />
     </div>
   );
 }
