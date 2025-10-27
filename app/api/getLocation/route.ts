@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(rows[0]);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error in getLocation:", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
