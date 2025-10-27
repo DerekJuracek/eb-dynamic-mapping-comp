@@ -31,13 +31,13 @@ export default function Mapping({ article, articledata } : { article: Article, a
         // center: articledata.lnglat,
         // zoom: 6
         });
-map.on('load', () => {
-  map.fitBounds(article.bbox, {
-    padding: 40,
-    maxZoom: 9,
-    duration: 1500
-  });
-});
+        map.on('load', () => {
+        map.fitBounds(article.bbox, {
+            padding: 40,
+            maxZoom: 9,
+            duration: 1500
+        });
+        });
 
 
        

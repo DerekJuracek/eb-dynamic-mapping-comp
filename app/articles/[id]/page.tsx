@@ -10,17 +10,15 @@ interface Props {
 
 export default function ArticlePage({ params }: Props) {
   const article = articles.find(a => a.id === params.id);
-  const resolvedParams = React.use(params)
-  const id = resolvedParams.id;
-  console.log(id)
+  const id = params.id;
+
   const [hasLocation, setHasLocation] = useState(false);
   const [data, setData] = useState(null);
 
   if (!article) {
     return <h1 className="text-center mt-10 text-red-600">Article not found</h1>;
   }
-  let articledata = null;
-  console.log('Rendering article:', article);
+
   useEffect(() => {
     fetch('/api/getLocation', {
       method: 'POST',
