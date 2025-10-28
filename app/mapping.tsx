@@ -20,124 +20,97 @@ export default function Mapping({ article } : { article: Article }) {
         }
     }, [])
        
+useEffect(() => {
+  if (!mapContainer.current) return;
 
-    useEffect(() => {
-        if (!mapContainer.current) return;
+  const map = new maplibregl.Map({
+    container: mapContainer.current,
+    style: currentMap,
+  });
 
-        const map = new maplibregl.Map({
-        container: mapContainer.current,
-        style: currentMap,
-        // style: 'https://demotiles.maplibre.org/globe.json', // free demo style
-        // center: articledata.lnglat,
-        // zoom: 6
-        });
-        map.on('load', () => {
-        map.fitBounds(article.bbox, {
-            padding: 40,
-            maxZoom: 9,
-            duration: 1500
-        });
-        });
+  map.on("load", () => {
+    // ✅ 1. Update label languages
+    const labelLayers = [
+      "Continent labels",
+      "Country labels",
+      "State labels",
+      "City labels",
+      "Capital city labels",
+      "Town labels",
+      "Place labels",
+      "Ocean labels",
+      "River labels",
+      "Lake labels",
+      "Road labels"
+    ];
 
-
-       
-
-        map.on("load", () => {
-            const labelLayers = [
-                "Continent labels",
-                "Country labels",
-                "State labels",
-                "City labels",
-                "Capital city labels",
-                "Town labels",
-                "Place labels",
-                "Ocean labels",
-                "River labels",
-                "Lake labels",
-                "Road labels"
-            ];
-
-
-            labelLayers.forEach(layerId => {
-                if (map.getLayer(layerId)) {
-                    map.setLayoutProperty(layerId, "text-field", [
-                        "coalesce",
-                        ["get", `name:'en'`],
-                        ["get", "name"]
-                    ]);
-                }
-            });
-        });
-        map.on('load', () => {
-            map.addSource('eb', {
-                type: "geojson",
-                data: '/gis/eb_locations_all_identifier.geojson'
-                // data: '/gis/eb_locations_all.geojson'
-                
-            });
-
-         map.addLayer({
-            id: 'city-points',
-            type: 'circle',
-            source: 'eb',
-            paint: {
-            'circle-radius': 7,
-            'circle-color': '#0078ff',
-            'circle-stroke-width': 2,
-            'circle-stroke-color': '#ffffff'
-            },
-        })
-
-        function getPopupHTML(features: any) {
-
-        // Example: convert WKT → bbox
-        const wkt = features.properties.bbox_geom;
-        const geom = wellknown.parse(wkt);
-        const bbox = turf.bbox(geom);
-
-        // Now bbox = [minX, minY, maxX, maxY]
-        map.fitBounds([
-            [bbox[0], bbox[1]], // southwest
-            [bbox[2], bbox[3]]  // northeast
+    labelLayers.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, "text-field", [
+          "coalesce",
+          ["get", "name:en"],
+          ["get", "name"]
         ]);
-        // map.fitBounds(features.properties.bbox_geom)
-            console.log('features', features);
-         const popupHTML = `
-            <div class="popup-card">
-            <div class="popup-title">${features.properties.title}</div>
-            <div class="popup-subtitle">${features.properties.formatted_address}</div>
-            <strong><a href="${features.properties.url}" target="_blank" class="popup-link">
-                View Britannica Article
-            </a>
-            </strong>
-            </div>
-        `;
-            return popupHTML;
-        }
+      }
+    });
 
-      // Add popup on click
-      map.on('click', 'city-points', (e) => {
-        if (e.features && e.features.length > 0) {
-          const name = e.features[0].properties.site_url;
-          const geomString = e.features[0].properties.geom;
-          const geom = JSON.parse(geomString);
+    // ✅ 2. Add GeoJSON source
+    map.addSource("eb", {
+      type: "geojson",
+      data: "/gis/eb_locations_all_identifier.geojson",
+    });
 
-        const lat = geom.lat;
-        const lng = geom.lng;
-          new maplibregl.Popup()
-            .setLngLat([lng, lat])
-            .setHTML(getPopupHTML(e.features[0]))
-            .addTo(map);
-        }
-      });
+    // ✅ 3. Add circle layer
+    map.addLayer({
+      id: "city-points",
+      type: "circle",
+      source: "eb",
+      paint: {
+        "circle-radius": 7,
+        "circle-color": "#0078ff",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+      },
+    });
 
-        map.on('mouseenter', 'city-points', () => map.getCanvas().style.cursor = 'pointer');
-        map.on('mouseleave', 'city-points', () => map.getCanvas().style.cursor = '');
-    
-        })
+    // ✅ 4. Zoom ONCE here
+    map.fitBounds(article.bbox, {
+      padding: 40,
+      maxZoom: 9,
+      duration: 1500,
+    });
 
-        return () => map.remove(); 
-    })
+    // ✅ 5. Add popups and hover behavior
+    map.on("click", "city-points", (e) => {
+      if (!e.features?.length) return;
+      const feature = e.features[0];
+      const geom = JSON.parse(feature.properties.geom);
+      const lat = geom.lat;
+      const lng = geom.lng;
+
+      const popupHTML = `
+        <div class="popup-card">
+          <div class="popup-title">${feature.properties.title}</div>
+          <div class="popup-subtitle">${feature.properties.formatted_address}</div>
+          <strong><a href="${feature.properties.url}" target="_blank" class="popup-link">
+            View Britannica Article
+          </a></strong>
+        </div>
+      `;
+
+      new maplibregl.Popup()
+        .setLngLat([lng, lat])
+        .setHTML(popupHTML)
+        .addTo(map);
+    });
+
+    map.on("mouseenter", "city-points", () => map.getCanvas().style.cursor = "pointer");
+    map.on("mouseleave", "city-points", () => map.getCanvas().style.cursor = "");
+  });
+
+  return () => map.remove();
+}, [currentMap]);
+
   return (
    <div className="w-full h-64 bg-gray-300 flex items-center justify-center rounded-lg mt-6">
        <div ref={mapContainer} className="w-full h-64 rounded-lg shadow-md" />
