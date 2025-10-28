@@ -1,3 +1,14 @@
+export interface Article {
+  id: string;
+  title: string;
+  language: string;
+  hasMap: boolean,
+  lnglat: [number, number],
+  bbox: [[number, number], [number, number]],
+  excerpt: string;
+  content: string;
+}
+
 export const articles: Article[] = [
   {
     id: "1",
