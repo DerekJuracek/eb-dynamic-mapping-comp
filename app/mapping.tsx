@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from 'maplibre-gl';
 import type { Article } from "./data/articles";
-import turf from 'turf';
-import wellknown from 'wellknown';
+// import * as turf from '@turf/turf';
+// import wellknown from 'wellknown';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export default function Mapping({ article } : { article: Article }) {
