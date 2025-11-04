@@ -26,6 +26,7 @@ useEffect(() => {
   const map = new maplibregl.Map({
     container: mapContainer.current,
     style: currentMap,
+    attributionControl: false,
    
   });
 
@@ -81,6 +82,15 @@ useEffect(() => {
       maxZoom: 9,
       duration: 1500,
     });
+
+    // Custom attribution
+    // map.addControl(
+    // new maplibregl.AttributionControl({
+    //   compact: true,
+    //   customAttribution: "© Britannica / OpenStreetMap"
+    // }),
+    // 'bottom-right'
+    // );
 
     // ✅ 5. Add popups and hover behavior
     map.on("click", "city-points", (e) => {
