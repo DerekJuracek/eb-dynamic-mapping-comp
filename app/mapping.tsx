@@ -26,33 +26,35 @@ useEffect(() => {
   const map = new maplibregl.Map({
     container: mapContainer.current,
     style: currentMap,
+   
   });
 
   map.on("load", () => {
     // ✅ 1. Update label languages
     const labelLayers = [
-      "Continent labels",
-      "Country labels",
-      "State labels",
-      "City labels",
-      "Capital city labels",
-      "Town labels",
-      "Place labels",
-      "Ocean labels",
-      "River labels",
-      "Lake labels",
-      "Road labels"
-    ];
+    "Continent labels",
+    "Country labels",
+    "State labels",
+    "City labels",
+    "Capital city labels",
+    "Town labels",
+    "Place labels",
+    "Ocean labels",
+    "River labels",
+    "Lake labels",
+    "Road labels"
+  ];
 
-    labelLayers.forEach(layerId => {
-      if (map.getLayer(layerId)) {
-        map.setLayoutProperty(layerId, "text-field", [
-          "coalesce",
-          ["get", "name:en"],
-          ["get", "name"]
-        ]);
-      }
-    });
+  labelLayers.forEach(layerId => {
+    if (map.getLayer(layerId)) {
+      map.setLayoutProperty(layerId, "text-field", [
+        "coalesce",
+        ["get", `name:${article.language}`], // 👈 use dynamic language key
+        ["get", "name:en"],
+        ["get", "name"]
+      ]);
+    }
+  });
 
     // ✅ 2. Add GeoJSON source
     map.addSource("eb", {
