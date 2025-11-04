@@ -1,5 +1,6 @@
 export interface Article {
   id: string;
+  size?: 'small' | 'large';
   title: string;
   language: string;
   hasMap: boolean,
@@ -12,6 +13,7 @@ export interface Article {
 export const articles: Article[] = [
   {
     id: "1",
+    size: "small",
     title: "Eiffel Tower: Paris Icon",
     language: 'fr',
     hasMap: true,
@@ -29,6 +31,7 @@ export const articles: Article[] = [
   },
   {
     id: "2",
+    size: "large",
     title: "Nile River: Lifeline of Africa",
     language: 'en',
     hasMap: true,
@@ -43,6 +46,7 @@ export const articles: Article[] = [
   },
   {
     id: "3",
+    size: "small",
     title: "Loch Ness: Scotland’s Mysterious Lake",
     language: 'en',
     hasMap: true,
@@ -56,6 +60,7 @@ export const articles: Article[] = [
   },
   {
     id: "4",
+    size: "large",
     title: "New Delhi: India’s Capital Heart",
     language: 'hi',
     hasMap: true,
@@ -69,6 +74,7 @@ export const articles: Article[] = [
   },
   {
     id: "5",
+    size: "large",
     title: "Chicago: The Windy City",
     language: 'en',
     hasMap: true,
@@ -82,6 +88,7 @@ export const articles: Article[] = [
   },
   {
     id: "6",
+    size: "large",
     title: "Tierra del Fuego: Edge of the World",
     language: 'es',
     hasMap: true,
@@ -95,6 +102,7 @@ export const articles: Article[] = [
   },
   {
     id: "7",
+    size: "large",
     title: "The Pentagon: Symbol of U.S. Defense",
     language: 'en',
     hasMap: true,
@@ -108,6 +116,7 @@ export const articles: Article[] = [
   },
   {
     id: "8",
+    size: "large",
     title: "Panama Canal: Gateway Between Oceans",
     language: 'es',
     hasMap: true,
@@ -121,6 +130,7 @@ export const articles: Article[] = [
   },
   {
     id: "9",
+    size: "large",
     title: "Red Square: Moscow’s Historic Center",
     language: 'ru',
     hasMap: true,
@@ -134,6 +144,7 @@ export const articles: Article[] = [
   },
   {
     id: "10",
+    size: "large",
     title: "Bosporus: The Continental Divide",
     language: 'tr',
     hasMap: true,
@@ -147,6 +158,7 @@ export const articles: Article[] = [
   },
   {
     id: "11",
+    size: "large",
     title: "Grand Canyon National Park",
     language: 'en',
     hasMap: true,
@@ -160,6 +172,7 @@ export const articles: Article[] = [
   },
   {
     id: "12",
+    size: "large",
     title: "Mount Kilimanjaro: Roof of Africa",
     language: 'sw',
     hasMap: true,
@@ -173,6 +186,7 @@ export const articles: Article[] = [
   },
   {
     id: "13",
+    size: "large",
     title: "Andes Mountains: The Spine of South America",
     language: 'es',
     hasMap: true,
@@ -185,6 +199,7 @@ export const articles: Article[] = [
   },
   {
     id: "14",
+    size: "large",
     title: "Sydney Harbour Bridge",
     language: 'en',
     hasMap: true,
@@ -197,6 +212,7 @@ export const articles: Article[] = [
   },
   {
     id: "15",
+    size: "large",
     title: "Ginza: Tokyo’s Modern District",
     language: 'ja',
     hasMap: true,
@@ -210,6 +226,7 @@ export const articles: Article[] = [
   },
   {
     id: "16",
+    size: "large",
     title: "Carthage: Ancient Power of the Mediterranean",
     language: 'ar',
     hasMap: true,
@@ -223,6 +240,7 @@ export const articles: Article[] = [
   },
   {
     id: "17",
+    size: "large",
     title: "Amazon Rainforest: Lungs of the Earth",
     language: 'pt',
     hasMap: true,
@@ -236,6 +254,7 @@ export const articles: Article[] = [
   },
   {
     id: "18",
+    size: "large",
     title: "Langjökull: Iceland’s Second-Largest Glacier",
     language: 'is',
     hasMap: true,
@@ -249,6 +268,7 @@ export const articles: Article[] = [
   },
   {
     id: "19",
+    size: "large",
     title: "South Pole: The Earth's Southernmost Point",
     language: 'en',
     hasMap: true,
@@ -262,6 +282,7 @@ export const articles: Article[] = [
   },
   {
     id: "20",
+    size: "large",
     title: "Colorado: Gateway to the Rockies",
     language: 'en',
     hasMap: true,
@@ -272,5 +293,22 @@ export const articles: Article[] = [
         From Denver’s mile-high skyline to the peaks of the Rockies, Colorado balances nature,
         innovation, and outdoor culture.
     `
-  }
+  },
+   {
+  id: "21",
+  size: "large",
+  title: "Woodstock: A Cultural Milestone",
+  language: 'en',
+  hasMap: true,
+  lnglat: [-74.1181971, 42.0409247],
+  bbox: [[-74.1604979, 42.0160319], [-74.076456, 42.066465]],
+  excerpt: "Woodstock, New York, became a symbol of music, peace, and counterculture after the 1969 festival.",
+  content: `
+      Although the famous Woodstock Festival of 1969 was actually held in Bethel, New York,
+      the town of Woodstock remains an enduring icon of art and free expression. Nestled in
+      the Catskill Mountains, it continues to draw artists, musicians, and travelers inspired
+      by its creative legacy and scenic charm.
+  `
+}
+
 ];

@@ -67,7 +67,7 @@ useEffect(() => {
       source: "eb",
       paint: {
         "circle-radius": 7,
-        "circle-color": "#0078ff",
+        "circle-color": "#0070F0",
         "circle-stroke-width": 2,
         "circle-stroke-color": "#ffffff",
       },
@@ -112,8 +112,20 @@ useEffect(() => {
 }, [currentMap]);
 
   return (
-   <div className="w-full h-64 bg-gray-300 flex items-center justify-center rounded-lg mt-6">
-       <div ref={mapContainer} className="w-full h-64 rounded-lg shadow-md" />
-    </div>
-  );
+  <>
+    {article.size === 'large' ? (
+      <div className="w-full h-96 bg-gray-300 flex items-center justify-center rounded-lg mt-6">
+        <div ref={mapContainer} className="w-full h-96 rounded-lg shadow-md" />
+      </div>
+    ) : (
+      <div
+        className="bg-gray-300 flex items-center justify-center rounded-lg mt-6"
+        style={{ width: '200px', height: '200px' }}
+      >
+        <div ref={mapContainer} className="w-full h-full rounded-lg shadow-md" />
+      </div>
+    )}
+  </>
+);
+
 }
