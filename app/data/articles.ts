@@ -16,7 +16,7 @@ export const articles: Article[] = [
     id: "1",
     size: "large",
     title: "Eiffel Tower: Paris Icon",
-    language: 'fr',
+    language: 'en',
     type: 'static-preview',
     hasMap: true,
     lnglat: [2.2944813, 48.8583701],
@@ -35,7 +35,7 @@ export const articles: Article[] = [
     id: "2",
     size: "small",
     title: "Nile River: Lifeline of Africa",
-    language: 'en',
+    language: 'pt',
     type: 'popup',
     hasMap: true,
     lnglat: [32.15770737905076, 23.55979236573434],
@@ -51,7 +51,7 @@ export const articles: Article[] = [
     id: "3",
     size: "small",
     title: "Loch Ness: Scotland’s Mysterious Lake",
-    language: 'en',
+    language: 'es',
     type: 'interactive',
     hasMap: true,
     lnglat: [-4.4243817, 57.3228575],
@@ -66,7 +66,7 @@ export const articles: Article[] = [
     id: "4",
     size: "large",
     title: "New Delhi: India’s Capital Heart",
-    language: 'hi',
+    language: 'es',
     type: 'interactive',
     hasMap: true,
     lnglat: [77.2088282, 28.6139298],
@@ -81,7 +81,7 @@ export const articles: Article[] = [
     id: "5",
     size: "large",
     title: "Chicago: The Windy City",
-    language: 'en',
+    language: 'pt',
     type: 'interactive',
     hasMap: true,
     lnglat: [-87.6323879, 41.88325],
@@ -141,7 +141,7 @@ export const articles: Article[] = [
     id: "9",
     size: "large",
     title: "Red Square: Moscow’s Historic Center",
-    language: 'ru',
+    language: 'en',
     type: 'interactive',
     hasMap: true,
     lnglat: [37.6218572, 55.7533818],
@@ -156,7 +156,7 @@ export const articles: Article[] = [
     id: "10",
     size: "large",
     title: "Bosporus: The Continental Divide",
-    language: 'tr',
+    language: 'en',
     type: 'interactive',
     hasMap: true,
     lnglat: [29.1290157, 41.2213125],
@@ -186,7 +186,7 @@ export const articles: Article[] = [
     id: "12",
     size: "large",
     title: "Mount Kilimanjaro: Roof of Africa",
-    language: 'sw',
+    language: 'en',
     type: 'interactive',
     hasMap: true,
     lnglat: [37.3556273, -3.0674247],
@@ -229,7 +229,7 @@ export const articles: Article[] = [
     id: "15",
     size: "large",
     title: "Ginza: Tokyo’s Modern District",
-    language: 'ja',
+    language: 'pt',
     type: 'interactive',
     hasMap: true,
     lnglat: [139.7664859, 35.6712228],
@@ -244,7 +244,7 @@ export const articles: Article[] = [
     id: "16",
     size: "large",
     title: "Carthage: Ancient Power of the Mediterranean",
-    language: 'ar',
+    language: 'en',
     type: 'interactive',
     hasMap: true,
     lnglat: [10.3320773, 36.8551087],
@@ -259,7 +259,7 @@ export const articles: Article[] = [
     id: "17",
     size: "large",
     title: "Amazon Rainforest: Lungs of the Earth",
-    language: 'pt',
+    language: 'es',
     type: 'interactive',
     hasMap: true,
     lnglat: [-55.491477, -8.783195],
@@ -274,7 +274,7 @@ export const articles: Article[] = [
     id: "18",
     size: "large",
     title: "Langjökull: Iceland’s Second-Largest Glacier",
-    language: 'is',
+    language: 'en',
     type: 'interactive',
     hasMap: true,
     lnglat: [-20.1531477, 64.6561868],
@@ -331,6 +331,186 @@ export const articles: Article[] = [
       the Catskill Mountains, it continues to draw artists, musicians, and travelers inspired
       by its creative legacy and scenic charm.
   `
-}
+},
+{
+    id: "22",
+    size: "large",
+    title: "Field Museum: Chicago’s Natural Wonder",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-87.6169805, 41.866261],
+    bbox: [[-87.6186799, 41.864562], [-87.6142176, 41.86726]],
+    excerpt: "The Field Museum in Chicago houses one of the world’s largest natural history collections.",
+    content: `
+        Founded in 1893, the Field Museum showcases millions of specimens and cultural artifacts.
+        Its iconic exhibitions include Sue the T. rex and extensive anthropology galleries.
+    `
+  },
+  {
+    id: "23",
+    size: "large",
+    title: "Shedd Aquarium: Beneath Chicago’s Waves",
+    language: "es",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-87.614038, 41.8675726],
+    bbox: [[-87.6158876, 41.8658195], [-87.6131897, 41.8685174]],
+    excerpt: "The Shedd Aquarium immerses visitors in marine life from around the globe.",
+    content: `
+        Opened in 1930 along Chicago’s lakefront, Shedd Aquarium combines conservation,
+        education, and breathtaking underwater exhibits from coral reefs to the Amazon.
+    `
+  },
+  {
+    id: "24",
+    size: "large",
+    title: "Wrigley Field: Chicago’s Baseball Cathedral",
+    language: "pt",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-87.6553327, 41.9484384],
+    bbox: [[-87.6568684, 41.9468182], [-87.6541704, 41.9495161]],
+    excerpt: "Wrigley Field, home of the Chicago Cubs, is a temple of American baseball history.",
+    content: `
+        Built in 1914, this ivy-covered ballpark has witnessed a century of games, fans, and unforgettable moments
+        in the heart of Chicago’s North Side.
+    `
+  },
+  {
+    id: "25",
+    size: "large",
+    title: "Illinois River: Flowing Through the Prairie State",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-89.4617115, 40.186832],
+    bbox: [[-90.6773046, 38.9445774], [-88.2461183, 41.4290866]],
+    excerpt: "The Illinois River meanders through the heart of the state, connecting land and life.",
+    content: `
+        Once vital for transportation and trade, the Illinois River continues to sustain ecosystems
+        and communities across central Illinois.
+    `
+  },
+  {
+    id: "26",
+    size: "large",
+    title: "Illinois: The Prairie State",
+    language: "es",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-89.3985283, 40.6331249],
+    bbox: [[-91.513079, 36.970298], [-87.019935, 42.5084809]],
+    excerpt: "Illinois, a hub of agriculture, industry, and culture, anchors the American Midwest.",
+    content: `
+        From Chicago’s skyline to rural farmlands, Illinois bridges innovation and tradition
+        as one of the United States’ most dynamic states.
+    `
+  },
+  {
+    id: "27",
+    size: "large",
+    title: "Quad Cities: Unity Across the Mississippi",
+    language: "pt",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-93.097702, 41.8780025],
+    bbox: [[-96.6394849, 40.37544], [-90.1400609, 43.5011961]],
+    excerpt: "The Quad Cities unite Illinois and Iowa along the mighty Mississippi River.",
+    content: `
+        Encompassing Davenport and Rock Island among others, the region thrives as a center of
+        manufacturing, culture, and cross-state cooperation.
+    `
+  },
+  {
+    id: "28",
+    size: "large",
+    title: "Wisconsin Dells: The Waterpark Capital",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-89.7748503, 43.6248766],
+    bbox: [[-89.8183351, 43.603516], [-89.73862, 43.6713341]],
+    excerpt: "Wisconsin Dells draws millions for its natural sandstone cliffs and family attractions.",
+    content: `
+        Located along the Wisconsin River, the Dells combine stunning scenery with entertainment,
+        making it a Midwestern vacation classic.
+    `
+  },
+  {
+    id: "29",
+    size: "large",
+    title: "Aurora: The City of Lights",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-88.3200715, 41.7605849],
+    bbox: [[-88.408369, 41.679869], [-88.204982, 41.822179]],
+    excerpt: "Aurora, Illinois shines as a hub of culture, history, and architecture west of Chicago.",
+    content: `
+        Known as the City of Lights for its early adoption of electric street lighting, Aurora
+        continues to blend innovation and heritage along the Fox River.
+    `
+  },
+  {
+    id: "30",
+    size: "large",
+    title: "Museum of Science and Industry",
+    language: "es",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-87.5830659, 41.7905726],
+    bbox: [[-87.5843255, 41.7895872], [-87.5804814, 41.7922852]],
+    excerpt: "Chicago’s Museum of Science and Industry brings innovation and discovery to life.",
+    content: `
+        Opened in 1933, the museum remains one of the largest of its kind, featuring interactive
+        exhibits on technology, space, and the human body.
+    `
+  },
+  {
+    id: "31",
+    size: "large",
+    title: "Rockford: Industrial Heritage of Illinois",
+    language: "pt",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-89.0877748, 42.2677214],
+    bbox: [[-89.195274, 42.143238], [-88.9408549, 42.33864]],
+    excerpt: "Rockford reflects Illinois’s manufacturing roots and Midwestern charm.",
+    content: `
+        Positioned along the Rock River, Rockford combines industry, architecture, and a growing
+        arts scene within northern Illinois.
+    `
+  },
+  {
+    id: "32",
+    size: "large",
+    title: "University of Notre Dame: A Legacy of Learning",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-86.2376772, 41.7018991],
+    bbox: [[-86.2388991, 41.7006655], [-86.2362012, 41.7033635]],
+    excerpt: "The University of Notre Dame stands as one of America’s premier Catholic institutions.",
+    content: `
+        Founded in 1842 in Indiana, Notre Dame is known for academic excellence, Fighting Irish football,
+        and its iconic Golden Dome.
+    `
+  },
+  {
+    id: "33",
+    size: "large",
+    title: "American Airlines Flight 191: Remembering Tragedy",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-87.8946175, 42.0096524],
+    bbox: [[-87.8959594, 42.0081828], [-87.8932615, 42.0108807]],
+    excerpt: "The 1979 crash of Flight 191 near Chicago remains one of America’s worst air disasters.",
+    content: `
+        Moments after takeoff from O’Hare Airport, the DC-10 crash claimed 273 lives.  
+        The memorial in Des Plaines honors those lost and the safety improvements that followed.
+    `
+  }
 
 ];

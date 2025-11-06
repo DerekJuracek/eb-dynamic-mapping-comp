@@ -10,7 +10,7 @@ gmaps = googlemaps.Client(key='AIzaSyC5UVpf6Zs7vWw4Pa_XXnoinoePOSR4iAQ')
 
 # this can be uploaded to a database or saved as a postgis table to ingest
 # keep as csv for now
-df = pd.read_csv('../app/data/map_locations_edited.csv')
+df = pd.read_csv('../app/data/dynamic_map_locations.csv')
 print(df.head())
 
 titles = df["title"]
@@ -68,7 +68,7 @@ if len(results) > 0:
     )
 
 
-    gdf.to_file('../public/gis/eb_locations_all_identifier.geojson', driver='GeoJSON')
+    gdf.to_file('../public/gis/eb_locations_all.geojson', driver='GeoJSON')
     gdf.to_csv('map_locations.csv', index=False)
 # next work on converting to geojson
 # df to geodf then geojson with geopandas?

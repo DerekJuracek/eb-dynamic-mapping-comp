@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
+import { wireCommonMap } from "./MapCommon";
 import type { Article } from "../data/articles";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 export default function MappingStaticToDynamic({ article }: { article: Article }) {
-  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
   const [isInteractive, setIsInteractive] = useState(false);
 
   const [minLon, minLat] = article.bbox[0];
@@ -16,44 +17,17 @@ export default function MappingStaticToDynamic({ article }: { article: Article }
       ? "019981e0-e17c-71b2-88c7-30c1b0eb8c2c"
       : "019981be-496a-7bae-b225-a418c34d5d49";
   const key = "yyuND61jYywaYRD458Fx";
-
-  const width = article.size === "large" ? 800 : 200;
-  const height = article.size === "large" ? 384 : 200;
-
-  const staticUrl = `https://api.maptiler.com/maps/${mapId}/static/${minLon},${minLat},${maxLon},${maxLat}/${width}x${height}.png?key=${key}`;
+  const w = article.size === "large" ? 800 : 200;
+  const h = article.size === "large" ? 384 : 200;
+  const staticUrl = `https://api.maptiler.com/maps/${mapId}/static/${minLon},${minLat},${maxLon},${maxLat}/${w}x${h}.png?key=${key}`;
 
   useEffect(() => {
-    if (!isInteractive || !mapContainer.current) return;
-
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: `https://api.maptiler.com/maps/${mapId}/style.json?key=${key}`,
-      attributionControl: false,
-    });
-
-    map.on("load", () => {
-      map.addSource("eb", {
-        type: "geojson",
-        data: "/gis/eb_locations_all_identifier.geojson",
-      });
-
-      map.addLayer({
-        id: "city-points",
-        type: "circle",
-        source: "eb",
-        paint: {
-          "circle-radius": 7,
-          "circle-color": "#0070F0",
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#ffffff",
-        },
-      });
-
-      map.fitBounds(article.bbox, { padding: 40, maxZoom: 9, duration: 1500 });
-    });
-
+    if (!isInteractive || !mapRef.current) return;
+    const style = `https://api.maptiler.com/maps/${mapId}/style.json?key=${key}`;
+    const map = new maplibregl.Map({ container: mapRef.current, style, attributionControl: false });
+    wireCommonMap(map, article);
     return () => map.remove();
-  }, [isInteractive]);
+  }, [isInteractive, article]);
 
   return (
     <div
@@ -64,13 +38,13 @@ export default function MappingStaticToDynamic({ article }: { article: Article }
     >
       {!isInteractive ? (
         <>
-          <img src={staticUrl} alt="Static map preview" className="w-full h-full object-cover" />
+          <img src={staticUrl} alt="Static map preview" className="w-full h-full object-cover rounded-lg" />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white font-medium">
             Click to view interactive map
           </div>
         </>
       ) : (
-        <div ref={mapContainer} className="w-full h-full" />
+        <div ref={mapRef} className="w-full h-full" />
       )}
     </div>
   );
