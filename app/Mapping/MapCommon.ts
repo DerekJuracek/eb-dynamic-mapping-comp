@@ -29,7 +29,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       }
     });
 
-    // 🔹 2. Add clustered source for all Britannica points
+    // 🔹 2. Clustered source for all Britannica points
     map.addSource("eb", {
       type: "geojson",
       data: "/gis/eb_locations_all.geojson",
@@ -38,7 +38,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       clusterRadius: 40,
     });
 
-    // 🔹 3. Cluster layers
+    // 🔹 3. Cluster circles
     map.addLayer({
       id: "clusters",
       type: "circle",
@@ -48,11 +48,11 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
         "circle-color": [
           "step",
           ["get", "point_count"],
-          "#51bbd6", // small
+          "#51bbd6",
           5,
-          "#f1f075", // medium
+          "#f1f075",
           15,
-          "#f28cb1", // large
+          "#f28cb1",
         ],
         "circle-radius": [
           "step",
@@ -68,6 +68,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
+    // 🔹 4. Cluster count labels
     map.addLayer({
       id: "cluster-count",
       type: "symbol",
@@ -78,12 +79,10 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
         "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
         "text-size": 12,
       },
-      paint: {
-        "text-color": "#333333",
-      },
+      paint: { "text-color": "#333333" },
     });
 
-    // 🔹 4. Unclustered points
+    // 🔹 5. Unclustered individual points
     map.addLayer({
       id: "unclustered-point",
       type: "circle",
@@ -97,7 +96,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-    // 🔹 5. Popup for unclustered points
+    // 🔹 6. Popup for unclustered points
     map.on("click", "unclustered-point", (e) => {
       if (!e.features?.length) return;
       const feature = e.features[0];
@@ -115,23 +114,24 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
         .setHTML(`
           <div class="popup-card">
             <div class="popup-title">${p.title}</div>
-            <a href="${p.url}" target="_blank" class="popup-link"><strong>View Britannica Article</strong></a>
+            <a href="${p.url}" target="_blank" class="popup-link">
+              <strong>View Britannica Article</strong>
+            </a>
           </div>
         `)
         .addTo(map);
     });
 
-    // 🔹 6. Expand cluster on click
+    // 🔹 7. Expand clusters on click
     map.on("click", "clusters", (e) => {
       const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
       const clusterId = features[0].properties?.cluster_id;
       const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-      source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+      source.getClusterExpansionZoom(clusterId, (err) => {
         if (err) return;
         map.easeTo({
-          center: (features[0].geometry as any).coordinates,
-          zoom,
+          center: (features[0].geometry as any).coordinates
         });
       });
     });
@@ -142,7 +142,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     map.on("mouseenter", "unclustered-point", () => (map.getCanvas().style.cursor = "pointer"));
     map.on("mouseleave", "unclustered-point", () => (map.getCanvas().style.cursor = ""));
 
-    // 🔹 7. Highlight source (active article)
+    // 🔹 8. Highlight source (current article)
     map.addSource("highlight", {
       type: "geojson",
       data: {
@@ -154,13 +154,17 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
               type: "Point",
               coordinates: article.lnglat,
             },
-            properties: { title: article.title },
+            properties: {
+              title: article.title,
+              url: article.url, // ✅ use directly from Article data
+              excerpt: article.excerpt,
+            },
           },
         ],
       },
     });
 
-    // 🔹 8. Highlight layer (red dot)
+    // 🔹 9. Highlight layer (red pulsing dot)
     map.addLayer({
       id: "highlight-point",
       type: "circle",
@@ -173,24 +177,27 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-    // 🔹 9. Optional popup for highlighted article
-    map.on("click", "highlight-point", () => {
+    // 🔹 10. Popup for highlighted article
+    map.on("click", "highlight-point", (e) => {
       const [lng, lat] = article.lnglat;
+      console.log(e.features)
       new maplibregl.Popup()
         .setLngLat([lng, lat])
         .setHTML(`
           <div class="popup-card">
             <div class="popup-title">${article.title}</div>
-            <a href="${p.url}" target="_blank" class="popup-link"><strong>View Britannica Article</strong></a>
+            <a href="${article.url}" target="_blank" class="popup-link">
+              <strong>View Britannica Article</strong>
+            </a>
           </div>
         `)
         .addTo(map);
     });
 
-    // 🔹 10. Simple pulse animation (highlight grows/shrinks)
-    const minRadius = 5;
-    const maxRadius = 10;
-    const duration = 1200; // ms per cycle
+    // 🔹 11. Pulse animation for highlight
+    const minRadius = 8;
+    const maxRadius = 14;
+    const duration = 1200;
     let start = performance.now();
 
     function animatePulse(ts: number) {
@@ -202,7 +209,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     }
     requestAnimationFrame(animatePulse);
 
-    // 🔹 11. Fit to article bbox once
+    // 🔹 12. Fit to article bounding box
     map.fitBounds(article.bbox as any, { padding: 40, maxZoom: 5, duration: 1200 });
   });
 }
