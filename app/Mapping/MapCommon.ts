@@ -132,17 +132,21 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
         .addTo(map);
     });
 
-    // 🔹 7. Expand clusters on click
-    map.on("click", "clusters", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
-      if (!e.features?.length) return;
-      const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
-      const clusterId = features[0].properties?.cluster_id;
-      const source = map.getSource("eb") as maplibregl.GeoJSONSource;
+map.on("click", "clusters", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+  if (!e.features?.length) return;
+  const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
+  const clusterId = (features[0].properties as FeatureProperties)?.cluster_id;
+  const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-     const zoom = source.getClusterExpansionZoom(clusterId)
-      if (zoom === undefined) return;
-      map.easeTo({ center: (features[0].geometry as any).coordinates });
-    });
+  if (clusterId === undefined) return;
+
+  source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+    if (err || zoom === undefined) return;
+    const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
+    map.easeTo({ center: coords, zoom });
+  });
+});
+
 
     // Cursor feedback
     map.on("mouseenter", "clusters", () => (map.getCanvas().style.cursor = "pointer"));
