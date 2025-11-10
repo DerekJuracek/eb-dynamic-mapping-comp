@@ -133,22 +133,26 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     });
 
 // 🔹 7. Expand clusters on click
-map.on("click", "clusters", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
   if (!e.features?.length) return;
   const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
   const clusterId = (features[0].properties as FeatureProperties)?.cluster_id;
 
   const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-  // ✅ Explicitly ensure clusterId is a number
+  // ✅ Ensure clusterId is numeric
   if (typeof clusterId !== "number") return;
 
-  // ✅ MapLibre’s getClusterExpansionZoom is synchronous and returns a number
-  const zoom = source.getClusterExpansionZoom(clusterId);
-
-  const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
-  map.easeTo({ center: coords, zoom });
+  try {
+    // ✅ Await the zoom (it’s a Promise<number>)
+    const zoom = await source.getClusterExpansionZoom(clusterId);
+    const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
+    map.easeTo({ center: coords, zoom });
+  } catch (err) {
+    console.error("Error expanding cluster:", err);
+  }
 });
+
 
 
 
