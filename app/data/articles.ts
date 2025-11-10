@@ -1,5 +1,6 @@
 export interface Article {
   id: string;
+  origin: "india" | "default";
   size?: "small" | "large";
   title: string;
   language: string;
@@ -15,6 +16,7 @@ export interface Article {
 export const articles: Article[] = [
   {
     id: "1",
+    origin: "default",
     size: "large",
     title: "Eiffel Tower",
     language: "en",
@@ -29,6 +31,7 @@ export const articles: Article[] = [
   },
   {
     id: "2",
+    origin: "default",
     size: "small",
     title: "Nile River",
     language: "pt",
@@ -43,6 +46,7 @@ export const articles: Article[] = [
   },
   {
     id: "3",
+    origin: "default",
     size: "small",
     title: "Loch Ness",
     language: "es",
@@ -56,6 +60,7 @@ export const articles: Article[] = [
   },
   {
     id: "4",
+    origin: "default",
     size: "large",
     title: "New Delhi",
     language: "es",
@@ -70,6 +75,7 @@ export const articles: Article[] = [
   },
   {
     id: "5",
+    origin: "default",
     size: "large",
     title: "Chicago",
     language: "pt",
@@ -83,6 +89,7 @@ export const articles: Article[] = [
   },
   {
     id: "6",
+    origin: "default",
     size: "large",
     title: "Tierra del Fuego",
     language: "es",
@@ -97,6 +104,7 @@ export const articles: Article[] = [
   },
   {
     id: "7",
+    origin: "default",
     size: "large",
     title: "Pentagon",
     language: "en",
@@ -111,6 +119,7 @@ export const articles: Article[] = [
   },
   {
     id: "8",
+    origin: "default",
     size: "large",
     title: "Panama Canal",
     language: "es",
@@ -124,6 +133,7 @@ export const articles: Article[] = [
   },
   {
     id: "9",
+    origin: "default",
     size: "large",
     title: "Red Square",
     language: "en",
@@ -138,6 +148,7 @@ export const articles: Article[] = [
   },
   {
     id: "10",
+    origin: "default",
     size: "large",
     title: "Bosporus",
     language: "en",
@@ -152,6 +163,7 @@ export const articles: Article[] = [
   },
   {
     id: "11",
+    origin: "default",
     size: "large",
     title: "Grand Canyon National Park",
     language: "en",
@@ -166,6 +178,7 @@ export const articles: Article[] = [
   },
   {
     id: "12",
+    origin: "default",
     size: "large",
     title: "Kilimanjaro",
     language: "en",
@@ -180,6 +193,7 @@ export const articles: Article[] = [
   },
   {
     id: "13",
+    origin: "default",
     size: "large",
     title: "Andes Mountains",
     language: "es",
@@ -194,6 +208,7 @@ export const articles: Article[] = [
   },
   {
     id: "14",
+    origin: "default",
     size: "large",
     title: "Sydney Harbour Bridge",
     language: "en",
@@ -208,6 +223,7 @@ export const articles: Article[] = [
   },
   {
     id: "15",
+    origin: "default",
     size: "large",
     title: "Ginza",
     language: "pt",
@@ -222,6 +238,7 @@ export const articles: Article[] = [
   },
   {
     id: "16",
+    origin: "default",
     size: "large",
     title: "Carthage",
     language: "en",
@@ -236,6 +253,7 @@ export const articles: Article[] = [
   },
   {
     id: "17",
+    origin: "default",
     size: "large",
     title: "Amazon Rainforest",
     language: "es",
@@ -249,6 +267,7 @@ export const articles: Article[] = [
   },
   {
     id: "18",
+    origin: "default",
     size: "large",
     title: "Langjökull",
     language: "en",
@@ -263,6 +282,7 @@ export const articles: Article[] = [
   },
   {
     id: "19",
+    origin: "default",
     size: "large",
     title: "Colorado",
     language: "en",
@@ -276,6 +296,7 @@ export const articles: Article[] = [
   },
   {
     id: "20",
+    origin: "default",
     size: "large",
     title: "Woodstock",
     language: "en",
@@ -290,6 +311,7 @@ export const articles: Article[] = [
   },
   {
     id: "21",
+    origin: "default",
     size: "large",
     title: "Field Museum",
     language: "en",
@@ -304,6 +326,7 @@ export const articles: Article[] = [
   },
   {
     id: "22",
+    origin: "default",
     size: "large",
     title: "Shedd Aquarium",
     language: "es",
@@ -318,6 +341,7 @@ export const articles: Article[] = [
   },
   {
     id: "23",
+    origin: "default",
     size: "large",
     title: "Wrigley Field",
     language: "pt",
@@ -332,6 +356,7 @@ export const articles: Article[] = [
   },
   {
     id: "24",
+    origin: "default",
     size: "large",
     title: "Illinois River",
     language: "en",
@@ -346,6 +371,7 @@ export const articles: Article[] = [
   },
   {
     id: "25",
+    origin: "default",
     size: "large",
     title: "Illinois River: Flowing Through the Prairie State",
     language: "en",
@@ -362,6 +388,7 @@ export const articles: Article[] = [
   },
 {
     id: "26",
+    origin: "default",
     size: "large",
     title: "Quad Cities",
     language: "pt",
@@ -379,6 +406,7 @@ export const articles: Article[] = [
   },
   {
     id: "27",
+    origin: "default",
     size: "large",
     title: "Wisconsin Dells",
     language: "es",
@@ -395,6 +423,7 @@ export const articles: Article[] = [
   },
   {
     id: "28",
+    origin: "default",
     size: "large",
     title: "Aurora",
     language: "en",
@@ -411,6 +440,7 @@ export const articles: Article[] = [
   },
   {
     id: "29",
+    origin: "default",
     size: "large",
     title: "Museum of Science and Industry",
     language: "en",
@@ -427,6 +457,7 @@ export const articles: Article[] = [
   },
   {
     id: "30",
+    origin: "default",
     size: "large",
     title: "Rockford",
     language: "es",
@@ -443,6 +474,7 @@ export const articles: Article[] = [
   },
   {
     id: "31",
+    origin: "default",
     size: "large",
     title: "Notre Dame",
     language: "pt",
@@ -459,6 +491,7 @@ export const articles: Article[] = [
   },
   {
     id: "32",
+    origin: "default",
     size: "large",
     title: "American Airlines Flight 191",
     language: "en",
@@ -475,6 +508,7 @@ export const articles: Article[] = [
   },
   {
     id: "33",
+    origin: "default",
     size: "large",
     title: "Peoria",
     language: "es",
