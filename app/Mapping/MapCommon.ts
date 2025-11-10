@@ -1,5 +1,12 @@
-import maplibregl from "maplibre-gl";
+import maplibregl, { MapMouseEvent, MapGeoJSONFeature } from "maplibre-gl";
 import type { Article } from "../data/articles";
+
+interface FeatureProperties {
+  title?: string;
+  url?: string;
+  geom?: string;
+  [key: string]: unknown;
+}
 
 export function wireCommonMap(map: maplibregl.Map, article: Article) {
   map.on("load", () => {
@@ -97,19 +104,20 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     });
 
     // 🔹 6. Popup for unclustered points
-    map.on("click", "unclustered-point", (e) => {
+    map.on("click", "unclustered-point", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
       if (!e.features?.length) return;
       const feature = e.features[0];
-      const p = feature.properties as any;
+      const p = feature.properties as FeatureProperties;
 
-      let geom;
+      if (!p.geom) return;
+      let geom: { lat: number; lng: number };
+
       try {
         geom = JSON.parse(p.geom);
-      } catch (error) {
+      } catch {
         console.error("Invalid geometry format:", p.geom);
         return;
       }
-      
 
       new maplibregl.Popup()
         .setLngLat([geom.lng, geom.lat])
@@ -125,17 +133,18 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     });
 
     // 🔹 7. Expand clusters on click
-    map.on("click", "clusters", (e) => {
+    map.on("click", "clusters", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+      if (!e.features?.length) return;
       const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
-      const clusterId = features[0].properties?.cluster_id;
+      const clusterId = features[0].properties?.cluster_id as number | undefined;
       const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-      const zoom = source.getClusterExpansionZoom(clusterId);
-      if (zoom === undefined) return;
-          map.easeTo({
-          center: (features[0].geometry as any).coordinates
-        });
-      
+      if (clusterId === undefined) return;
+      source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err || zoom === undefined) return;
+        const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
+        map.easeTo({ center: coords, zoom });
+      });
     });
 
     // Cursor feedback
@@ -158,7 +167,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
             },
             properties: {
               title: article.title,
-              url: article.url, // ✅ use directly from Article data
+              url: article.url,
               excerpt: article.excerpt,
             },
           },
@@ -180,9 +189,8 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     });
 
     // 🔹 10. Popup for highlighted article
-    map.on("click", "highlight-point", (e) => {
+    map.on("click", "highlight-point", () => {
       const [lng, lat] = article.lnglat;
-      console.log(e.features)
       new maplibregl.Popup()
         .setLngLat([lng, lat])
         .setHTML(`
@@ -212,6 +220,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     requestAnimationFrame(animatePulse);
 
     // 🔹 12. Fit to article bounding box
-    map.fitBounds(article.bbox as any, { padding: 40, maxZoom: 5, duration: 1200 });
+    map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, { padding: 40, maxZoom: 5, duration: 1200 });
   });
 }
