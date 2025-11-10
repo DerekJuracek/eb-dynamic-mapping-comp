@@ -62,14 +62,6 @@ if len(results) > 0:
     )
 
 
-
-# if len(results) > 0:
-#     df = pd.DataFrame(results)
-#     print(df.head())
-# gdf = gpd.GeoDataFrame(
-#     df, geometry=gpd.points_from_xy(df['geometry'].apply(lambda x: x['lng']), df['geometry'].apply(lambda x: x['lat'])))
-
-
     gdf.to_file('../public/gis/eb_locations_all.geojson', driver='GeoJSON')
  
 
