@@ -198,7 +198,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     const minRadius = 8;
     const maxRadius = 14;
     const duration = 1200;
-    let start = performance.now();
+    const start = performance.now();
 
     function animatePulse(ts: number) {
       const elapsed = (ts - start) % duration;
