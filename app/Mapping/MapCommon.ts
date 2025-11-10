@@ -137,17 +137,19 @@ map.on("click", "clusters", (e: MapMouseEvent & { features?: MapGeoJSONFeature[]
   if (!e.features?.length) return;
   const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
   const clusterId = (features[0].properties as FeatureProperties)?.cluster_id;
+
   const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-  if (clusterId === undefined) return;
+  // ✅ Explicitly ensure clusterId is a number
+  if (typeof clusterId !== "number") return;
 
-  // ✅ MapLibre’s getClusterExpansionZoom is synchronous
+  // ✅ MapLibre’s getClusterExpansionZoom is synchronous and returns a number
   const zoom = source.getClusterExpansionZoom(clusterId);
 
-  if (zoom === undefined) return;
   const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
   map.easeTo({ center: coords, zoom });
 });
+
 
 
 
