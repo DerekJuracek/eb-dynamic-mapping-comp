@@ -1,7 +1,7 @@
 export interface Article {
   id: string;
   origin: "india" | "default";
-  size?: "small" | "large";
+  size?: "large" | "large";
   title: string;
   language: string;
   type: string;
@@ -32,7 +32,7 @@ export const articles: Article[] = [
   {
     id: "2",
     origin: "default",
-    size: "small",
+    size: "large",
     title: "Nile River",
     language: "pt",
     type: "popup",
@@ -47,7 +47,7 @@ export const articles: Article[] = [
   {
     id: "3",
     origin: "default",
-    size: "small",
+    size: "large",
     title: "Loch Ness",
     language: "es",
     type: "interactive",
