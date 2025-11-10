@@ -105,9 +105,11 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       let geom;
       try {
         geom = JSON.parse(p.geom);
-      } catch {
-        geom = { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] };
+      } catch (error) {
+        console.error("Invalid geometry format:", p.geom);
+        return;
       }
+      
 
       new maplibregl.Popup()
         .setLngLat([geom.lng, geom.lat])
@@ -128,12 +130,12 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       const clusterId = features[0].properties?.cluster_id;
       const source = map.getSource("eb") as maplibregl.GeoJSONSource;
 
-      source.getClusterExpansionZoom(clusterId, (err) => {
-        if (err) return;
-        map.easeTo({
+      const zoom = source.getClusterExpansionZoom(clusterId);
+      if (zoom === undefined) return;
+          map.easeTo({
           center: (features[0].geometry as any).coordinates
         });
-      });
+      
     });
 
     // Cursor feedback
