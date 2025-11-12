@@ -163,43 +163,52 @@ map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFea
     map.on("mouseenter", "unclustered-point", () => (map.getCanvas().style.cursor = "pointer"));
     map.on("mouseleave", "unclustered-point", () => (map.getCanvas().style.cursor = ""));
 
-    // 🔹 8. Highlight source (current article)
-    map.addSource("highlight", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: article.lnglat,
-            },
-            properties: {
-              title: article.title,
-              url: article.url,
-              excerpt: article.excerpt,
-            },
-          },
-        ],
+// 🔹 8. Highlight source (current article)
+map.addSource("highlight", {
+  type: "geojson",
+  data: {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: article.lnglat,
+        },
+        properties: {
+          title: article.title,
+          url: article.url,
+          excerpt: article.excerpt,
+        },
       },
-    });
+    ],
+  },
+});
 
-    // 🔹 9. Highlight layer (red pulsing dot)
+// 🔹 9. Load and add the custom thumbtack pin icon
+(async () => {
+  try {
+    const image = await map.loadImage("/icons/brand_pin_large.png");
+
+    if (!map.hasImage("thumbtack-pin")) {
+      map.addImage("thumbtack-pin", image.data, { sdf: false });
+    }
+
+    // 🔹 10. Add symbol layer using the thumbtack pin
     map.addLayer({
-      id: "highlight-point",
-      type: "circle",
+      id: "highlight-pin",
+      type: "symbol",
       source: "highlight",
-      paint: {
-        "circle-radius": 10,
-        "circle-color": "#e63946",
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#ffffff",
+      layout: {
+        "icon-image": "thumbtack-pin",
+        "icon-size": 0.50,
+        "icon-anchor": "bottom",
+        "icon-allow-overlap": true,
       },
     });
 
-    // 🔹 10. Popup for highlighted article
-    map.on("click", "highlight-point", () => {
+    // 🔹 11. Popup for the highlighted article
+    map.on("click", "highlight-pin", () => {
       const [lng, lat] = article.lnglat;
       new maplibregl.Popup()
         .setLngLat([lng, lat])
@@ -214,22 +223,24 @@ map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFea
         .addTo(map);
     });
 
-    // 🔹 11. Pulse animation for highlight
-    const minRadius = 8;
-    const maxRadius = 14;
-    const duration = 1200;
-    const start = performance.now();
-
-    function animatePulse(ts: number) {
-      const elapsed = (ts - start) % duration;
-      const t = elapsed / duration;
-      const radius = minRadius + (maxRadius - minRadius) * Math.abs(Math.sin(t * Math.PI));
-      map.setPaintProperty("highlight-point", "circle-radius", radius);
-      requestAnimationFrame(animatePulse);
+    // ✅ 12. Zoom to bbox now that everything is ready
+    if (article.bbox && Array.isArray(article.bbox)) {
+      map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
+        padding: 40,
+        maxZoom: 5,
+        duration: 1200,
+      });
+    } else {
+      map.setCenter(article.lnglat as [number, number]);
+      map.setZoom(5);
     }
-    requestAnimationFrame(animatePulse);
 
-    // 🔹 12. Fit to article bounding box
-    map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, { padding: 40, maxZoom: 5, duration: 1200 });
-  });
+  } catch (err) {
+    console.error("Error loading pin icon:", err);
+  }
+
+})();
+
+
+})
 }
