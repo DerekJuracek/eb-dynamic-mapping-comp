@@ -17,8 +17,8 @@ export default function MappingStaticToPopup({ article }: { article: Article }) 
       ? "019981e0-e17c-71b2-88c7-30c1b0eb8c2c"
       : "019981be-496a-7bae-b225-a418c34d5d49";
   const key = "yyuND61jYywaYRD458Fx";
-  const w = article.size === "large" ? 800 : 200;
-  const h = article.size === "large" ? 384 : 200;
+  const w = article.size === "large" ? 800 : 300;
+  const h = article.size === "large" ? 384 : 300;
   const staticUrl = `https://api.maptiler.com/maps/${mapId}/static/${minLon},${minLat},${maxLon},${maxLat}/${w}x${h}.png?key=${key}`;
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function MappingStaticToPopup({ article }: { article: Article }) 
     <>
       <div
         className={`relative rounded-lg shadow-md mt-6 cursor-pointer ${
-          article.size === "large" ? "w-full h-96" : "w-[200px] h-[200px]"
+          article.size === "large" ? "w-full h-96" : "w-[300px] h-[300px]"
         }`}
         onClick={() => setOpen(true)}
       >

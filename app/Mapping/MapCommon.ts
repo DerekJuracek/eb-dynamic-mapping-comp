@@ -10,6 +10,9 @@ interface FeatureProperties {
 
 export function wireCommonMap(map: maplibregl.Map, article: Article) {
   map.on("load", () => {
+    // Allow keyboard users to focus the map
+  map.getCanvas().tabIndex = 0;
+
     // 🔹 1. Localized label language
     const labelLayers = [
       "Continent labels",
@@ -119,7 +122,10 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
         return;
       }
 
-      new maplibregl.Popup()
+      new maplibregl.Popup({
+          offset: [20, 0],  // 20px to the right
+          anchor: 'left'
+      })
         .setLngLat([geom.lng, geom.lat])
         .setHTML(`
           <div class="popup-card">
@@ -207,10 +213,61 @@ map.addSource("highlight", {
       },
     });
 
+    let pointerOverHighlightPin = false;
+
+    map.on("mouseenter", "highlight-pin", () => {
+      pointerOverHighlightPin = true;
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    map.on("mouseleave", "highlight-pin", () => {
+      pointerOverHighlightPin = false;
+      map.getCanvas().style.cursor = "";
+    });
+
+    
+
+    map.getCanvas().addEventListener("keydown", (e) => {
+  if (!pointerOverHighlightPin) return; // Only activate when "on" the pin
+
+  if (e.key === "Enter" || e.key === " ") {
+    const [lng, lat] = article.lnglat;
+
+    new maplibregl.Popup({
+      offset: [20, 0],
+      anchor: "left"
+    })
+      .setLngLat([lng, lat])
+      .setHTML(`
+        <div class="popup-card" role="dialog">
+          <div class="popup-title">${article.title}</div>
+          <a href="${article.url}" target="_blank" class="popup-link">
+            <strong>View Britannica Article</strong>
+          </a>
+        </div>
+      `)
+      .addTo(map);
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const popups = document.getElementsByClassName("maplibregl-popup");
+    if (popups.length > 0) popups[0].remove();
+  }
+});
+
+
+
+
     // 🔹 11. Popup for the highlighted article
     map.on("click", "highlight-pin", () => {
       const [lng, lat] = article.lnglat;
-      new maplibregl.Popup()
+    
+      new maplibregl.Popup({
+         offset: [20, 0],  // 20px to the right
+        anchor: 'left'   // ← move popup to the right of the icon
+      })
         .setLngLat([lng, lat])
         .setHTML(`
           <div class="popup-card">
@@ -222,6 +279,8 @@ map.addSource("highlight", {
         `)
         .addTo(map);
     });
+
+    
 
     // ✅ 12. Zoom to bbox now that everything is ready
     if (article.bbox && Array.isArray(article.bbox)) {

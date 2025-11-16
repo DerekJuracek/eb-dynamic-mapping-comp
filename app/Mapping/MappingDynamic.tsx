@@ -22,7 +22,7 @@ export default function MappingDynamic({ article }: { article: Article }) {
   }, [article]);
 
   return (
-    <div className={`rounded-lg shadow-md mt-6 ${article.size === "large" ? "w-full h-96" : "w-[200px] h-[200px]"}`}>
+    <div className={`rounded-lg shadow-md mt-6 ${article.size === "large" ? "w-full h-96" : "w-[300px] h-[300px]"}`}>
       <div ref={ref} className="w-full h-full rounded-lg" />
     </div>
   );
