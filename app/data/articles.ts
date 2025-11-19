@@ -29,8 +29,60 @@ export const articles: Article[] = [
     content: `Rising above the Champ de Mars, the Eiffel Tower has come to define the Parisian skyline.`,
     url: "https://www.britannica.com/topic/Eiffel-Tower-Paris-France",
   },
-  {
+   {
     id: "2",
+    origin: "default",
+    size: "large",
+    title: "Nile River",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [32.15770737905076, 23.55979236573434],
+    bbox: [[30.2512728, 15.6073172], [34.0641419, 31.5122675]],
+    excerpt:
+      "The Nile River flows over 4,100 miles through Africa, nurturing civilizations for millennia.",
+    content: `The Nile has been the foundation of African agriculture and settlement since ancient Egypt.`,
+    url: "https://www.britannica.com/place/Nile-River",
+  },
+   {
+    id: "3",
+    origin: "default",
+    size: "large",
+    title: "Colorado",
+    language: "en",
+    type: "interactive",
+    hasMap: true,
+    lnglat: [-105.7820674, 39.5500507],
+    bbox: [[-109.060204, 36.992449], [-102.041522, 41.0034439]],
+    excerpt: "Colorado is a state defined by its mountains, plains, and adventurous spirit.",
+    content: `From Denver’s skyline to the peaks of the Rockies, Colorado balances nature and innovation.`,
+    url: "https://www.britannica.com/place/Colorado-state",
+  },
+  {
+  id: "4",
+  origin: "default",
+  size: "large",
+  title: "Lollapalooza",
+  language: "en",
+  type: "interactive",
+  hasMap: true,
+  lnglat: [-87.6200004, 41.8721453], // Grant Park center
+  bbox: [
+    [-87.6287, 41.8647], // SW corner of Grant Park festival footprint
+    [-87.6138, 41.8822]  // NE corner
+  ],
+  excerpt:
+    "Lollapalooza is one of the world’s largest and most influential music festivals, held each summer in Chicago’s Grant Park.",
+  content: `
+    Founded in 1991 by Perry Farrell, Lollapalooza has grown into a global festival brand.
+    The Chicago edition spans four days and features hundreds of artists across multiple stages,
+    drawing fans from around the world to the shores of Lake Michigan.
+  `,
+  url: "https://www.britannica.com/art/Lollapalooza",
+},
+
+  {
+    id: "5",
     origin: "default",
     size: "small",
     title: "Kilimanjaro",
@@ -46,7 +98,7 @@ export const articles: Article[] = [
   },
  
   {
-    id: "3",
+    id: "6",
     origin: "default",
     size: "large",
     title: "Loch Ness",
@@ -60,7 +112,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Loch-Ness-lake-Scotland-United-Kingdom",
   },
   {
-    id: "4",
+    id: "7",
     origin: "default",
     size: "large",
     title: "Red Square",
@@ -75,7 +127,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Red-Square",
   },
     {
-    id: "5",
+    id: "8",
     origin: "default",
     size: "large",
     title: "Woodstock",
@@ -90,10 +142,10 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/event/Woodstock",
   },
     {
-    id: "6",
+    id: "9",
     origin: "india",
     size: "large",
-    title: "New Delhi - Non-US Users",
+    title: "New Delhi - India Users",
     language: "en",
     type: "static-preview",
     hasMap: true,
@@ -105,10 +157,10 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Delhi",
   },
    {
-    id: "7",
+    id: "10",
     origin: "default",
     size: "large",
-    title: "New Delhi - US Users",
+    title: "New Delhi - Non-India Users",
     language: "en",
     type: "static-preview",
     hasMap: true,
@@ -120,7 +172,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Delhi",
   },
   {
-    id: "8",
+    id: "11",
     origin: "default",
     size: "large",
     title: "Panama Canal",
@@ -134,7 +186,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Panama-Canal",
   },
   {
-    id: "9",
+    id: "12",
     origin: "default",
     size: "large",
     title: "Tierra del Fuego",
@@ -149,7 +201,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Tierra-del-Fuego-archipelago-South-America",
   },
   {
-  id: "10",
+  id: "13",
   origin: "default",
   size: "large",
   title: "Gulf of America / Gulf of Mexico",
@@ -164,7 +216,7 @@ export const articles: Article[] = [
   url: "https://www.britannica.com/place/Gulf-of-Mexico",
 },
 {
-  id: "11",
+  id: "14",
   origin: "india",
   size: "large",
   title: "Gulf of Mexico - Non-US Users",
@@ -180,7 +232,7 @@ export const articles: Article[] = [
 },
  
    {
-    id: "12",
+    id: "15",
     origin: "default",
     size: "large",
     title: "Chicago",
@@ -194,7 +246,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Illinois-state",
   },
   {
-    id: "13",
+    id: "16",
     origin: "default",
     size: "large",
     title: "Field Museum",
@@ -209,7 +261,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Field-Museum",
   },
   {
-    id: "14",
+    id: "17",
     origin: "default",
     size: "large",
     title: "Shedd Aquarium",
@@ -224,7 +276,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Shedd-Aquarium",
   },
   {
-    id: "15",
+    id: "18",
     origin: "default",
     size: "large",
     title: "Wrigley Field",
@@ -239,7 +291,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Wrigley-Field",
   },
   {
-    id: "16",
+    id: "19",
     origin: "default",
     size: "large",
     title: "Illinois River",
@@ -254,7 +306,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Illinois-River",
   },
   {
-    id: "17",
+    id: "20",
     origin: "default",
     size: "large",
     title: "Illinois River: Flowing Through the Prairie State",
@@ -271,7 +323,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Illinois-River",
   },
 {
-    id: "18",
+    id: "21",
     origin: "default",
     size: "large",
     title: "Quad Cities",
@@ -289,7 +341,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Quad-Cities",
   },
   {
-    id: "19",
+    id: "22",
     origin: "default",
     size: "large",
     title: "Wisconsin Dells",
@@ -306,7 +358,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Wisconsin-Dells",
   },
   {
-    id: "20",
+    id: "23",
     origin: "default",
     size: "large",
     title: "Aurora",
@@ -323,7 +375,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Aurora-Illinois",
   },
   {
-    id: "21",
+    id: "24",
     origin: "default",
     size: "large",
     title: "Museum of Science and Industry",
@@ -340,7 +392,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Museum-of-Science-and-Industry",
   },
   {
-    id: "22",
+    id: "25",
     origin: "default",
     size: "large",
     title: "Rockford",
@@ -357,7 +409,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Rockford",
   },
   {
-    id: "23",
+    id: "26",
     origin: "default",
     size: "large",
     title: "Notre Dame",
@@ -374,7 +426,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/University-of-Notre-Dame",
   },
   {
-    id: "24",
+    id: "27",
     origin: "default",
     size: "large",
     title: "American Airlines Flight 191",
@@ -391,7 +443,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/event/American-Airlines-Flight-191",
   },
   {
-    id: "25",
+    id: "28",
     origin: "default",
     size: "large",
     title: "Peoria",
@@ -408,7 +460,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Peoria-Illinois",
   },
   {
-    id: "26",
+    id: "29",
     origin: "default",
     size: "large",
     title: "Pentagon",
@@ -423,7 +475,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Pentagon",
   },
   {
-    id: "27",
+    id: "30",
     origin: "default",
     size: "large",
     title: "Andes Mountains",
@@ -438,7 +490,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Andes-Mountains",
   },
   {
-    id: "28",
+    id: "31",
     origin: "default",
     size: "large",
     title: "Sydney Harbour Bridge",
@@ -453,7 +505,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/topic/Sydney-Harbour-Bridge",
   },
   {
-    id: "29",
+    id: "32",
     origin: "default",
     size: "large",
     title: "Ginza",
@@ -468,7 +520,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Ginza-Japan",
   },
   {
-    id: "30",
+    id: "33",
     origin: "default",
     size: "large",
     title: "Carthage",
@@ -483,7 +535,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Carthage-ancient-city-Tunisia",
   },
   {
-    id: "31",
+    id: "34",
     origin: "default",
     size: "large",
     title: "Amazon Rainforest",
@@ -497,7 +549,7 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Amazon-Rainforest",
   },
   {
-    id: "32",
+    id: "35",
     origin: "default",
     size: "large",
     title: "Langjökull",
@@ -511,22 +563,9 @@ export const articles: Article[] = [
     content: `Located in the western highlands, Langjökull provides scientists a window into climate change.`,
     url: "https://www.britannica.com/place/Langjokull",
   },
-  {
-    id: "33",
-    origin: "default",
-    size: "large",
-    title: "Colorado",
-    language: "en",
-    type: "interactive",
-    hasMap: true,
-    lnglat: [-105.7820674, 39.5500507],
-    bbox: [[-109.060204, 36.992449], [-102.041522, 41.0034439]],
-    excerpt: "Colorado is a state defined by its mountains, plains, and adventurous spirit.",
-    content: `From Denver’s skyline to the peaks of the Rockies, Colorado balances nature and innovation.`,
-    url: "https://www.britannica.com/place/Colorado-state",
-  },
+ 
    {
-    id: "34",
+    id: "36",
     origin: "default",
     size: "large",
     title: "Bosporus",
@@ -540,20 +579,6 @@ export const articles: Article[] = [
     content: `This narrow waterway defines Istanbul’s geography and history, blending East and West.`,
     url: "https://www.britannica.com/place/Bosporus",
   },
-   {
-    id: "35",
-    origin: "default",
-    size: "large",
-    title: "Nile River",
-    language: "en",
-    type: "interactive",
-    hasMap: true,
-    lnglat: [32.15770737905076, 23.55979236573434],
-    bbox: [[30.2512728, 15.6073172], [34.0641419, 31.5122675]],
-    excerpt:
-      "The Nile River flows over 4,100 miles through Africa, nurturing civilizations for millennia.",
-    content: `The Nile has been the foundation of African agriculture and settlement since ancient Egypt.`,
-    url: "https://www.britannica.com/place/Nile-River",
-  },
+  
 
 ];

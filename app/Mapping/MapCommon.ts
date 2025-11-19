@@ -128,8 +128,8 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       })
         .setLngLat([geom.lng, geom.lat])
         .setHTML(`
-          <div class="popup-card">
-            <div class="popup-title">${p.title}</div>
+          <div class="popup-card" role="dialog" aria-label="Map popup for ${p.title}">
+            <div class="popup-title" aria-label="Map popup for ${p.title}">${p.title}</div>
             <a href="${p.url}" target="_blank" class="popup-link">
               <strong>View Britannica Article</strong>
             </a>
