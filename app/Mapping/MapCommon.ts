@@ -131,7 +131,7 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
           <div class="popup-card" role="dialog" aria-label="Map popup for ${p.title}">
             <div class="popup-title" aria-label="Map popup for ${p.title}">${p.title}</div>
             <a href="${p.url}" target="_blank" class="popup-link">
-              <strong>View Britannica Article</strong>
+              <strong>Read Article</strong>
             </a>
           </div>
         `)
@@ -242,7 +242,7 @@ map.addSource("highlight", {
         <div class="popup-card" role="dialog">
           <div class="popup-title">${article.title}</div>
           <a href="${article.url}" target="_blank" class="popup-link">
-            <strong>View Britannica Article</strong>
+            <strong>Read Article</strong>
           </a>
         </div>
       `)
@@ -273,7 +273,7 @@ document.addEventListener("keydown", (e) => {
           <div class="popup-card">
             <div class="popup-title">${article.title}</div>
             <a href="${article.url}" target="_blank" class="popup-link">
-              <strong>View Britannica Article</strong>
+              <strong>Read Article</strong>
             </a>
           </div>
         `)
@@ -308,7 +308,7 @@ new maplibregl.Popup({
     <div class="popup-card">
       <div class="popup-title">${article.title}</div>
       <a href="${article.url}" target="_blank" class="popup-link">
-        <strong>View Britannica Article</strong>
+        <strong>Read Article</strong>
       </a>
     </div>
   `)
