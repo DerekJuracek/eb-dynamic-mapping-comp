@@ -282,17 +282,38 @@ document.addEventListener("keydown", (e) => {
 
     
 
-    // ✅ 12. Zoom to bbox now that everything is ready
-    if (article.bbox && Array.isArray(article.bbox)) {
-      map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
-        padding: 40,
-        maxZoom: 5,
-        duration: 1200,
-      });
-    } else {
-      map.setCenter(article.lnglat as [number, number]);
-      map.setZoom(5);
-    }
+    // ✅ 12. Zoom to bbox now that everything is ready + auto popup
+if (article.bbox && Array.isArray(article.bbox)) {
+  map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
+    padding: 60,
+    maxZoom: 13,
+    // zoom: 9,
+    duration: 2500,  // slower zoom
+    easing: (t) => t * t * (3 - 2 * t), // smooth ease
+  });
+} else {
+  map.setCenter(article.lnglat as [number, number]);
+  map.setZoom(9);
+}
+
+// 🔹 Auto-open popup for the highlighted article
+const [lng, lat] = article.lnglat;
+
+new maplibregl.Popup({
+  offset: [20, 0],
+  anchor: "left"
+})
+  .setLngLat([lng, lat])
+  .setHTML(`
+    <div class="popup-card">
+      <div class="popup-title">${article.title}</div>
+      <a href="${article.url}" target="_blank" class="popup-link">
+        <strong>View Britannica Article</strong>
+      </a>
+    </div>
+  `)
+  .addTo(map);
+
 
   } catch (err) {
     console.error("Error loading pin icon:", err);
