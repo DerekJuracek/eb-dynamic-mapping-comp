@@ -282,19 +282,34 @@ document.addEventListener("keydown", (e) => {
 
     
 
-    // ✅ 12. Zoom to bbox now that everything is ready + auto popup
-if (article.bbox && Array.isArray(article.bbox)) {
-  map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
-    padding: 60,
-    maxZoom: 13,
-    // zoom: 9,
-    duration: 2500,  // slower zoom
-    easing: (t) => t * t * (3 - 2 * t), // smooth ease
+if (article.articleType === "event" || article.articleType === "poi") {
+  // Smooth stable zoom — NO globe rotation
+  map.flyTo({
+    center: article.lnglat as [number, number],
+    zoom: 9,
+    duration: 2500,
+    essential: true,
   });
 } else {
-  map.setCenter(article.lnglat as [number, number]);
-  map.setZoom(9);
+  if (article.bbox && Array.isArray(article.bbox)) {
+    map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
+      padding: 60,
+      // maxZoom: 13,
+      duration: 2500,
+      easing: (t) => t * t * (3 - 2 * t),
+    });
+  } else {
+    map.flyTo({
+      center: article.lnglat as [number, number],
+      zoom: 9,
+      duration: 2500,
+      essential: true,
+    });
+  }
 }
+
+
+
 
 // 🔹 Auto-open popup for the highlighted article
 const [lng, lat] = article.lnglat;

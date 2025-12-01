@@ -1,5 +1,6 @@
 export interface Article {
   id: string;
+  articleType: "place" | "event" | "poi";
   origin: "india" | "default";
   size?: "large" | "small";
   title: string;
@@ -16,6 +17,7 @@ export interface Article {
 export const articles: Article[] = [
   {
     id: "1",
+    articleType: "poi",
     origin: "default",
     size: "large",
     title: "Eiffel Tower",
@@ -31,6 +33,7 @@ export const articles: Article[] = [
   },
    {
     id: "2",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Nile River",
@@ -46,6 +49,7 @@ export const articles: Article[] = [
   },
    {
     id: "3",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Colorado",
@@ -60,6 +64,7 @@ export const articles: Article[] = [
   },
   {
   id: "4",
+  articleType: "event",
   origin: "default",
   size: "large",
   title: "Lollapalooza",
@@ -83,6 +88,7 @@ export const articles: Article[] = [
 
   {
     id: "5",
+    articleType: "place",
     origin: "default",
     size: "small",
     title: "Kilimanjaro",
@@ -99,6 +105,7 @@ export const articles: Article[] = [
  
   {
     id: "6",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Loch Ness",
@@ -113,6 +120,7 @@ export const articles: Article[] = [
   },
   {
     id: "7",
+    articleType: "poi",
     origin: "default",
     size: "large",
     title: "Red Square",
@@ -128,6 +136,7 @@ export const articles: Article[] = [
   },
     {
     id: "8",
+    articleType: "event",
     origin: "default",
     size: "large",
     title: "Woodstock",
@@ -143,6 +152,7 @@ export const articles: Article[] = [
   },
     {
     id: "9",
+    articleType: "place",
     origin: "india",
     size: "large",
     title: "New Delhi - India Users",
@@ -158,6 +168,7 @@ export const articles: Article[] = [
   },
    {
     id: "10",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "New Delhi - Non-India Users",
@@ -173,6 +184,7 @@ export const articles: Article[] = [
   },
   {
     id: "11",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Panama Canal",
@@ -187,6 +199,7 @@ export const articles: Article[] = [
   },
   {
     id: "12",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Tierra del Fuego",
@@ -202,6 +215,7 @@ export const articles: Article[] = [
   },
   {
   id: "13",
+  articleType: "place",
   origin: "default",
   size: "large",
   title: "Gulf of America / Gulf of Mexico",
@@ -217,6 +231,7 @@ export const articles: Article[] = [
 },
 {
   id: "14",
+  articleType: "place",
   origin: "india",
   size: "large",
   title: "Gulf of Mexico - Non-US Users",
@@ -233,6 +248,7 @@ export const articles: Article[] = [
  
    {
     id: "15",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Chicago",
@@ -247,6 +263,7 @@ export const articles: Article[] = [
   },
   {
     id: "16",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Field Museum",
@@ -262,6 +279,7 @@ export const articles: Article[] = [
   },
   {
     id: "17",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Shedd Aquarium",
@@ -277,6 +295,7 @@ export const articles: Article[] = [
   },
   {
     id: "18",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Wrigley Field",
@@ -292,6 +311,7 @@ export const articles: Article[] = [
   },
   {
     id: "19",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Illinois River",
@@ -307,6 +327,7 @@ export const articles: Article[] = [
   },
   {
     id: "20",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Illinois River: Flowing Through the Prairie State",
@@ -324,6 +345,7 @@ export const articles: Article[] = [
   },
 {
     id: "21",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Quad Cities",
@@ -342,6 +364,7 @@ export const articles: Article[] = [
   },
   {
     id: "22",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Wisconsin Dells",
@@ -359,6 +382,7 @@ export const articles: Article[] = [
   },
   {
     id: "23",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Aurora",
@@ -376,6 +400,7 @@ export const articles: Article[] = [
   },
   {
     id: "24",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Museum of Science and Industry",
@@ -393,6 +418,7 @@ export const articles: Article[] = [
   },
   {
     id: "25",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Rockford",
@@ -410,6 +436,7 @@ export const articles: Article[] = [
   },
   {
     id: "26",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Notre Dame",
@@ -427,6 +454,7 @@ export const articles: Article[] = [
   },
   {
     id: "27",
+    articleType: "event",
     origin: "default",
     size: "large",
     title: "American Airlines Flight 191",
@@ -444,6 +472,7 @@ export const articles: Article[] = [
   },
   {
     id: "28",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Peoria",
@@ -461,6 +490,7 @@ export const articles: Article[] = [
   },
   {
     id: "29",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Pentagon",
@@ -476,6 +506,7 @@ export const articles: Article[] = [
   },
   {
     id: "30",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Andes Mountains",
@@ -491,6 +522,7 @@ export const articles: Article[] = [
   },
   {
     id: "31",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Sydney Harbour Bridge",
@@ -506,6 +538,7 @@ export const articles: Article[] = [
   },
   {
     id: "32",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Ginza",
@@ -521,6 +554,7 @@ export const articles: Article[] = [
   },
   {
     id: "33",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Carthage",
@@ -536,6 +570,7 @@ export const articles: Article[] = [
   },
   {
     id: "34",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Amazon Rainforest",
@@ -550,6 +585,7 @@ export const articles: Article[] = [
   },
   {
     id: "35",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Langjökull",
@@ -566,6 +602,7 @@ export const articles: Article[] = [
  
    {
     id: "36",
+    articleType: "place",
     origin: "default",
     size: "large",
     title: "Bosporus",
