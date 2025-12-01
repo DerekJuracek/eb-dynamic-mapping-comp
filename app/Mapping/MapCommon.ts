@@ -1,19 +1,33 @@
-import maplibregl, { MapMouseEvent, MapGeoJSONFeature } from "maplibre-gl";
+import maplibregl, {
+  MapMouseEvent,
+  MapGeoJSONFeature,
+} from "maplibre-gl";
 import type { Article } from "../data/articles";
 
 interface FeatureProperties {
   title?: string;
   url?: string;
   geom?: string;
+  cluster_id?: number;
   [key: string]: unknown;
 }
 
 export function wireCommonMap(map: maplibregl.Map, article: Article) {
-  map.on("load", () => {
-    // Allow keyboard users to focus the map
-  map.getCanvas().tabIndex = 0;
+  map.on("load", async () => {
+    // Allow keyboard focus
+    map.getCanvas().tabIndex = 0;
 
-    // 🔹 1. Localized label language
+    // Tracks whether user interacted before enabling hover popups
+    let hasUserInteracted = false;
+    const markInteraction = () => (hasUserInteracted = true);
+
+    map.on("mousedown", markInteraction);
+    map.on("wheel", markInteraction);
+    map.on("touchstart", markInteraction);
+
+    // ---------------------------------------------------------
+    // 1. Language Label Support
+    // ---------------------------------------------------------
     const labelLayers = [
       "Continent labels",
       "Country labels",
@@ -39,7 +53,9 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       }
     });
 
-    // 🔹 2. Clustered source for all Britannica points
+    // ---------------------------------------------------------
+    // 2. Cluster Source
+    // ---------------------------------------------------------
     map.addSource("eb", {
       type: "geojson",
       data: "/gis/eb_locations_all.geojson",
@@ -48,7 +64,9 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       clusterRadius: 40,
     });
 
-    // 🔹 3. Cluster circles
+    // ---------------------------------------------------------
+    // 3. Cluster Layers
+    // ---------------------------------------------------------
     map.addLayer({
       id: "clusters",
       type: "circle",
@@ -78,7 +96,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-    // 🔹 4. Cluster count labels
     map.addLayer({
       id: "cluster-count",
       type: "symbol",
@@ -86,13 +103,14 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       filter: ["has", "point_count"],
       layout: {
         "text-field": ["get", "point_count_abbreviated"],
-        "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
         "text-size": 12,
       },
-      paint: { "text-color": "#333333" },
+      paint: { "text-color": "#333" },
     });
 
-    // 🔹 5. Unclustered individual points
+    // ---------------------------------------------------------
+    // 4. Individual Points
+    // ---------------------------------------------------------
     map.addLayer({
       id: "unclustered-point",
       type: "circle",
@@ -106,140 +124,169 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-    // 🔹 6. Popup for unclustered points
-    map.on("click", "unclustered-point", (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+    // ---------------------------------------------------------
+    // 5. Cluster Expansion
+    // ---------------------------------------------------------
+    map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+      markInteraction();
+
       if (!e.features?.length) return;
-      const feature = e.features[0];
-      const p = feature.properties as FeatureProperties;
 
-      if (!p.geom) return;
-      let geom: { lat: number; lng: number };
+      const clusterFeature = e.features[0];
+      const props = clusterFeature.properties as FeatureProperties;
+      const clusterId = props.cluster_id;
 
-      try {
-        geom = JSON.parse(p.geom);
-      } catch {
-        console.error("Invalid geometry format:", p.geom);
-        return;
-      }
+      if (typeof clusterId !== "number") return;
 
-      new maplibregl.Popup({
-          offset: [20, 0],  // 20px to the right
-          anchor: 'left'
-      })
-        .setLngLat([geom.lng, geom.lat])
-        .setHTML(`
-          <div class="popup-card" role="dialog" aria-label="Map popup for ${p.title}">
-            <div class="popup-title" aria-label="Map popup for ${p.title}">${p.title}</div>
-            <a href="${p.url}" target="_blank" class="popup-link">
-              <strong>Read Article</strong>
-            </a>
-          </div>
-        `)
-        .addTo(map);
+      const source = map.getSource("eb") as maplibregl.GeoJSONSource;
+      const zoom = await source.getClusterExpansionZoom(clusterId);
+      const coords = (clusterFeature.geometry as GeoJSON.Point).coordinates as [number, number];
+
+      map.easeTo({ center: coords, zoom });
     });
 
-// 🔹 7. Expand clusters on click
-map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
-  if (!e.features?.length) return;
-  const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
-  const clusterId = (features[0].properties as FeatureProperties)?.cluster_id;
-
-  const source = map.getSource("eb") as maplibregl.GeoJSONSource;
-
-  // ✅ Ensure clusterId is numeric
-  if (typeof clusterId !== "number") return;
-
-  try {
-    // ✅ Await the zoom (it’s a Promise<number>)
-    const zoom = await source.getClusterExpansionZoom(clusterId);
-    const coords = (features[0].geometry as GeoJSON.Point).coordinates as [number, number];
-    map.easeTo({ center: coords, zoom });
-  } catch (err) {
-    console.error("Error expanding cluster:", err);
-  }
-});
-
-
-
-
-
-    // Cursor feedback
-    map.on("mouseenter", "clusters", () => (map.getCanvas().style.cursor = "pointer"));
-    map.on("mouseleave", "clusters", () => (map.getCanvas().style.cursor = ""));
-    map.on("mouseenter", "unclustered-point", () => (map.getCanvas().style.cursor = "pointer"));
-    map.on("mouseleave", "unclustered-point", () => (map.getCanvas().style.cursor = ""));
-
-// 🔹 8. Highlight source (current article)
-map.addSource("highlight", {
-  type: "geojson",
-  data: {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: article.lnglat,
-        },
-        properties: {
-          title: article.title,
-          url: article.url,
-          excerpt: article.excerpt,
-        },
+    // ---------------------------------------------------------
+    // 6. Highlight Pin
+    // ---------------------------------------------------------
+    map.addSource("highlight", {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: article.lnglat },
+            properties: {
+              title: article.title,
+              url: article.url,
+              excerpt: article.excerpt,
+            },
+          },
+        ],
       },
-    ],
-  },
-});
+    });
 
-// 🔹 9. Load and add the custom thumbtack pin icon
-(async () => {
-  try {
-    const image = await map.loadImage("/icons/brand_pin_large.png");
-
+    const pinImage = await map.loadImage("/icons/brand_pin_large.png");
     if (!map.hasImage("thumbtack-pin")) {
-      map.addImage("thumbtack-pin", image.data, { sdf: false });
+      map.addImage("thumbtack-pin", pinImage.data);
     }
 
-    // 🔹 10. Add symbol layer using the thumbtack pin
     map.addLayer({
       id: "highlight-pin",
       type: "symbol",
       source: "highlight",
       layout: {
         "icon-image": "thumbtack-pin",
-        "icon-size": 0.50,
+        "icon-size": 0.5,
         "icon-anchor": "bottom",
         "icon-allow-overlap": true,
       },
     });
 
-    let pointerOverHighlightPin = false;
+  // ---------------------------------------------------------
+// 7. Stable Hover Popup System (Correct Feature-Based Hover)
+// ---------------------------------------------------------
 
-    map.on("mouseenter", "highlight-pin", () => {
-      pointerOverHighlightPin = true;
-      map.getCanvas().style.cursor = "pointer";
-    });
+let activePopup: maplibregl.Popup | null = null;
+let isOverSymbol = false;
+let isOverPopup = false;
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-    map.on("mouseleave", "highlight-pin", () => {
-      pointerOverHighlightPin = false;
-      map.getCanvas().style.cursor = "";
-    });
+// Track entering popup DOM
+document.addEventListener("mouseover", (e) => {
+  if ((e.target as HTMLElement).closest(".popup-card")) {
+    isOverPopup = true;
+  }
+});
 
-    
+// Track leaving popup DOM
+document.addEventListener("mouseout", (e) => {
+  if ((e.target as HTMLElement).closest(".popup-card")) {
+    isOverPopup = false;
+    schedulePopupClose();
+  }
+});
 
-    map.getCanvas().addEventListener("keydown", (e) => {
-  if (!pointerOverHighlightPin) return; // Only activate when "on" the pin
+const schedulePopupClose = () => {
+  if (closeTimer) clearTimeout(closeTimer);
+  closeTimer = setTimeout(() => {
+    if (!isOverSymbol && !isOverPopup && activePopup) {
+      activePopup.remove();
+      activePopup = null;
+    }
+  }, 150);
+};
 
-  if (e.key === "Enter" || e.key === " ") {
+// -----------------------------------------------
+// Helper to attach proper hover logic
+// -----------------------------------------------
+function attachHoverHandlers(layerId: string) {
+  map.on(
+    "mouseenter",
+    layerId,
+    (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+      isOverSymbol = true;
+      if (!hasUserInteracted) return;
+      if (!e.features?.length) return;
+
+      const props = e.features[0].properties as FeatureProperties;
+
+      // Get coordinates
+      let lngLat: [number, number];
+      if (props.geom) {
+        const { lat, lng } = JSON.parse(props.geom);
+        lngLat = [lng, lat];
+      } else {
+        // fallback for highlight pin
+        lngLat = (e.features[0].geometry as GeoJSON.Point)
+          .coordinates as [number, number];
+      }
+
+      // Remove any prior popup
+      if (activePopup) activePopup.remove();
+
+      // Create popup
+      activePopup = new maplibregl.Popup({
+        closeButton: false,
+        offset: [20, 0],
+        anchor: "left",
+      })
+        .setLngLat(lngLat)
+        .setHTML(`
+          <div class="popup-card" role="dialog" aria-label="Map popup for ${props.title}">
+                <div class="popup-title" aria-label="Map popup for ${props.title}">${props.title}</div>
+                <a href="${props.url}" target="_blank" class="popup-link">
+                  <strong>Read Article</strong>
+                </a>
+              </div>
+        `)
+        .addTo(map);
+    }
+  );
+
+  map.on("mouseleave", layerId, () => {
+    isOverSymbol = false;
+    schedulePopupClose();
+  });
+}
+
+// Attach for both layers
+attachHoverHandlers("unclustered-point");
+attachHoverHandlers("highlight-pin");
+
+
+    // ---------------------------------------------------------
+    // 8. Auto-open popup on load
+    // ---------------------------------------------------------
     const [lng, lat] = article.lnglat;
 
-    new maplibregl.Popup({
+    const initialPopup = new maplibregl.Popup({
       offset: [20, 0],
-      anchor: "left"
+      anchor: "left",
     })
       .setLngLat([lng, lat])
       .setHTML(`
-        <div class="popup-card" role="dialog">
+       <div class="popup-card" role="dialog" aria-label="Map popup for ${article.title}">
           <div class="popup-title">${article.title}</div>
           <a href="${article.url}" target="_blank" class="popup-link">
             <strong>Read Article</strong>
@@ -247,95 +294,24 @@ map.addSource("highlight", {
         </div>
       `)
       .addTo(map);
-  }
-});
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    const popups = document.getElementsByClassName("maplibregl-popup");
-    if (popups.length > 0) popups[0].remove();
-  }
-});
-
-
-
-
-    // 🔹 11. Popup for the highlighted article
-    map.on("click", "highlight-pin", () => {
-      const [lng, lat] = article.lnglat;
-    
-      new maplibregl.Popup({
-         offset: [20, 0],  // 20px to the right
-        anchor: 'left'   // ← move popup to the right of the icon
-      })
-        .setLngLat([lng, lat])
-        .setHTML(`
-          <div class="popup-card">
-            <div class="popup-title">${article.title}</div>
-            <a href="${article.url}" target="_blank" class="popup-link">
-              <strong>Read Article</strong>
-            </a>
-          </div>
-        `)
-        .addTo(map);
-    });
-
-    
-
-if (article.articleType === "event" || article.articleType === "poi") {
-  // Smooth stable zoom — NO globe rotation
-  map.flyTo({
-    center: article.lnglat as [number, number],
-    zoom: 9,
-    duration: 2500,
-    essential: true,
+    // ---------------------------------------------------------
+    // 9. Zoom to location
+    // ---------------------------------------------------------
+    if (article.bbox) {
+      map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
+        padding: 60,
+        maxZoom: 10,
+        duration: 2500,
+        easing: (t) => t * t * (3 - 2 * t),
+      });
+    } else {
+      map.easeTo({
+        center: article.lnglat as [number, number],
+        zoom: 9,
+        duration: 2500,
+        easing: (t) => t * t * (3 - 2 * t),
+      });
+    }
   });
-} else {
-  if (article.bbox && Array.isArray(article.bbox)) {
-    map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
-      padding: 60,
-      // maxZoom: 13,
-      duration: 2500,
-      easing: (t) => t * t * (3 - 2 * t),
-    });
-  } else {
-    map.flyTo({
-      center: article.lnglat as [number, number],
-      zoom: 9,
-      duration: 2500,
-      essential: true,
-    });
-  }
-}
-
-
-
-
-// 🔹 Auto-open popup for the highlighted article
-const [lng, lat] = article.lnglat;
-
-new maplibregl.Popup({
-  offset: [20, 0],
-  anchor: "left"
-})
-  .setLngLat([lng, lat])
-  .setHTML(`
-    <div class="popup-card">
-      <div class="popup-title">${article.title}</div>
-      <a href="${article.url}" target="_blank" class="popup-link">
-        <strong>Read Article</strong>
-      </a>
-    </div>
-  `)
-  .addTo(map);
-
-
-  } catch (err) {
-    console.error("Error loading pin icon:", err);
-  }
-
-})();
-
-
-})
 }
