@@ -1,5 +1,6 @@
 export interface Article {
   id: string;
+  place_id?: string;
   articleType: "place" | "event" | "poi";
   origin: "india" | "default";
   size?: "large" | "small";
@@ -17,6 +18,7 @@ export interface Article {
 export const articles: Article[] = [
   {
     id: "1",
+    place_id: "ChIJLU7jZClu5kcR4PcOOO6p3I0",
     articleType: "poi",
     origin: "default",
     size: "large",
@@ -33,6 +35,7 @@ export const articles: Article[] = [
   },
    {
     id: "2",
+    place_id: "hIJrUWsRqizWhQRIqs0_CQzO2I",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -49,6 +52,7 @@ export const articles: Article[] = [
   },
    {
     id: "3",
+    place_id: "ChIJKTeiTcMWj0gRL5H-9MtJ19Q",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -63,31 +67,8 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/place/Colorado-state",
   },
   {
-  id: "4",
-  articleType: "event",
-  origin: "default",
-  size: "large",
-  title: "Lollapalooza",
-  language: "en",
-  type: "interactive",
-  hasMap: true,
-  lnglat: [-87.6200004, 41.8721453], // Grant Park center
-  bbox: [
-    [-87.6287, 41.8647], // SW corner of Grant Park festival footprint
-    [-87.6138, 41.8822]  // NE corner
-  ],
-  excerpt:
-    "Lollapalooza is one of the world’s largest and most influential music festivals, held each summer in Chicago’s Grant Park.",
-  content: `
-    Founded in 1991 by Perry Farrell, Lollapalooza has grown into a global festival brand.
-    The Chicago edition spans four days and features hundreds of artists across multiple stages,
-    drawing fans from around the world to the shores of Lake Michigan.
-  `,
-  url: "https://www.britannica.com/art/Lollapalooza",
-},
-
-  {
     id: "5",
+    place_id: "ChIJBahuOVr8ORgRAWzqjkccdI4",
     articleType: "place",
     origin: "default",
     size: "small",
@@ -105,6 +86,7 @@ export const articles: Article[] = [
  
   {
     id: "6",
+    place_id: "hIJKTeiTcMWj0gRL5H-9MtJ19Q",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -120,6 +102,7 @@ export const articles: Article[] = [
   },
   {
     id: "7",
+    place_id: "ChIJAcyCZFdKtUYRv6AmH5Tglts",
     articleType: "poi",
     origin: "default",
     size: "large",
@@ -136,6 +119,7 @@ export const articles: Article[] = [
   },
     {
     id: "8",
+    place_id: "ChIJK0zPwDMH3YkR_HEHiO--XLg",
     articleType: "event",
     origin: "default",
     size: "large",
@@ -152,6 +136,7 @@ export const articles: Article[] = [
   },
     {
     id: "9",
+    place_id: "ChIJLbZ-NFv9DDkRzk0gTkm3wlI",
     articleType: "place",
     origin: "india",
     size: "large",
@@ -168,6 +153,7 @@ export const articles: Article[] = [
   },
    {
     id: "10",
+    place_id: "ChIJLbZ-NFv9DDkRzk0gTkm3wlI",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -184,6 +170,7 @@ export const articles: Article[] = [
   },
   {
     id: "11",
+    place_id: "ChIJLUnNMUtfq48RYAlKoecR3dk",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -199,6 +186,7 @@ export const articles: Article[] = [
   },
   {
     id: "12",
+    place_id: "ChIJfUmnsdW-5ZURPAib3OPTgwg",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -213,41 +201,10 @@ export const articles: Article[] = [
     content: `This remote archipelago straddles Chile and Argentina, known for glaciers and rugged mountains.`,
     url: "https://www.britannica.com/place/Tierra-del-Fuego-archipelago-South-America",
   },
-  {
-  id: "13",
-  articleType: "place",
-  origin: "default",
-  size: "large",
-  title: "Gulf of America / Gulf of Mexico",
-  language: "en",
-  type: "interactive",
-  hasMap: true,
-  lnglat: [-90.0, 24.5],
-  bbox: [[-97.0, 18.0], [-81.0, 30.0]],
-  excerpt:
-    "The Gulf of Mexico—sometimes called the Gulf of America—is a vast ocean basin bordered by the United States, Mexico, and Cuba.",
-  content: `Known for its warm waters and rich marine life, the Gulf of Mexico (also called the Gulf of America) connects to the Atlantic Ocean through the Florida Straits and the Caribbean Sea via the Yucatán Channel. It plays a vital role in global shipping, energy, and coastal ecosystems.`,
-  url: "https://www.britannica.com/place/Gulf-of-Mexico",
-},
-{
-  id: "14",
-  articleType: "place",
-  origin: "india",
-  size: "large",
-  title: "Gulf of Mexico - Non-US Users",
-  language: "en",
-  type: "interactive",
-  hasMap: true,
-  lnglat: [-90.0, 24.5],
-  bbox: [[-97.0, 18.0], [-81.0, 30.0]],
-  excerpt:
-    "The Gulf of Mexico—sometimes called the Gulf of America—is a vast ocean basin bordered by the United States, Mexico, and Cuba.",
-  content: `Known for its warm waters and rich marine life, the Gulf of Mexico (also called the Gulf of America) connects to the Atlantic Ocean through the Florida Straits and the Caribbean Sea via the Yucatán Channel. It plays a vital role in global shipping, energy, and coastal ecosystems.`,
-  url: "https://www.britannica.com/place/Gulf-of-Mexico",
-},
  
    {
     id: "15",
+    place_id: "ChIJ7cv00DwsDogRAMDACa2m4K8",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -263,6 +220,7 @@ export const articles: Article[] = [
   },
   {
     id: "16",
+    place_id: "ChIJV0AwM30rDogR2sd-X0cgErU",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -279,6 +237,7 @@ export const articles: Article[] = [
   },
   {
     id: "17",
+    place_id: "ChIJ-XW3X2MrDogR3_tQ3-OdBTI",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -295,6 +254,7 @@ export const articles: Article[] = [
   },
   {
     id: "18",
+    place_id: "ChIJId-a5bLTD4gRRtbdduE-6hw",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -311,6 +271,7 @@ export const articles: Article[] = [
   },
   {
     id: "19",
+    place_id: "ChIJG6UQ727UC4gRZ1CX6cyLegM",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -327,6 +288,7 @@ export const articles: Article[] = [
   },
   {
     id: "20",
+    place_id: "ChIJGSZubzgtC4gRVlkRZFCCFX8",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -345,6 +307,7 @@ export const articles: Article[] = [
   },
 {
     id: "21",
+    place_id: "ChIJQ740FcIx4ocRdXbu7OGdCdY",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -364,6 +327,7 @@ export const articles: Article[] = [
   },
   {
     id: "22",
+    place_id: "ChIJnXbLBz5JB4gReDMLKM0mzUo",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -382,6 +346,7 @@ export const articles: Article[] = [
   },
   {
     id: "23",
+    place_id: "ChIJGxHVTk3lDogRXehQw0j40X8",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -400,6 +365,7 @@ export const articles: Article[] = [
   },
   {
     id: "24",
+    place_id: "ChIJHd8BYAopDogRBuMXc6oszA8",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -418,6 +384,7 @@ export const articles: Article[] = [
   },
   {
     id: "25",
+    place_id: "ChIJ2wAD_c25CIgRgGePgpfYygo",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -436,6 +403,7 @@ export const articles: Article[] = [
   },
   {
     id: "26",
+    place_id: "ChIJE_w1tKHSFogRNqFbi5bMiQs",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -454,6 +422,7 @@ export const articles: Article[] = [
   },
   {
     id: "27",
+    place_id: "ChIJZfMGA_i2D4gRxCqCv13KuZ0",
     articleType: "event",
     origin: "default",
     size: "large",
@@ -471,25 +440,8 @@ export const articles: Article[] = [
     url: "https://www.britannica.com/event/American-Airlines-Flight-191",
   },
   {
-    id: "28",
-    articleType: "place",
-    origin: "default",
-    size: "large",
-    title: "Peoria",
-    language: "es",
-    type: "interactive",
-    hasMap: true,
-    lnglat: [-89.5889864, 40.6936488],
-    bbox: [[-89.684, 40.625], [-89.522, 40.78]],
-    excerpt:
-      "Peoria, situated along the Illinois River, represents the heart of the American Midwest.",
-    content: `
-      Known for its manufacturing legacy and cultural vitality, Peoria remains a vital Illinois city.
-    `,
-    url: "https://www.britannica.com/place/Peoria-Illinois",
-  },
-  {
     id: "29",
+    place_id: "ChIJJyztKd-2t4kRL1MTwPjQg68",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -506,6 +458,7 @@ export const articles: Article[] = [
   },
   {
     id: "30",
+    place_id: "ChIJL51OWvySh5YRVHkUAg1TFos",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -522,6 +475,7 @@ export const articles: Article[] = [
   },
   {
     id: "31",
+    place_id: "ChIJBa7IFYuuEmsRn7XUnfYcDC8",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -538,6 +492,7 @@ export const articles: Article[] = [
   },
   {
     id: "32",
+    place_id: "ChIJu2-DAeeLGGARUZipC7OFRmA",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -554,6 +509,7 @@ export const articles: Article[] = [
   },
   {
     id: "33",
+    place_id: "ChIJv-zubbq14hIR_irCo8ZhXZo",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -570,6 +526,7 @@ export const articles: Article[] = [
   },
   {
     id: "34",
+    place_id: "ChIJhUN0QlNg6JERx39KOcFtPD0",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -585,6 +542,7 @@ export const articles: Article[] = [
   },
   {
     id: "35",
+    place_id: "ChIJhdLb3DQP1EgRuhL3PgFfQBA",
     articleType: "place",
     origin: "default",
     size: "large",
@@ -602,6 +560,7 @@ export const articles: Article[] = [
  
    {
     id: "36",
+    place_id: "ChIJn5k8FGjKyhQRtd_p_WFbAGM",
     articleType: "place",
     origin: "default",
     size: "large",

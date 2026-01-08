@@ -10,7 +10,7 @@ gmaps = googlemaps.Client(key='AIzaSyC5UVpf6Zs7vWw4Pa_XXnoinoePOSR4iAQ')
 
 # this can be uploaded to a database or saved as a postgis table to ingest
 # keep as csv for now
-df = pd.read_csv('../app/data/dynamic_map_locations.csv')
+df = pd.read_csv('../app/data/mendel_url_place_id_mapping.csv')
 print(df.head())
 
 titles = df["title"]
@@ -19,12 +19,15 @@ results = []
 for i, row in df.iterrows():
     title = row['title']
     identifier = row['identifier']
+    place_id = row['place_id'] 
+    url = row['url']
     geocode_val = f"{title}, {identifier}"
     
     geocode_result = gmaps.geocode(geocode_val)
     failed_geocodes = []
 
     if geocode_result:
+        print(geocode_result)
         result = {}
         result['title'] = title
         result['identifier'] = identifier
@@ -32,8 +35,8 @@ for i, row in df.iterrows():
         result["geom"] = geocode_result[0]['geometry']['location']
         result["bbox"] = geocode_result[0]['geometry']['viewport']
         result["formatted_address"] = geocode_result[0]['formatted_address']
-        result["place_id"] = geocode_result[0]['place_id']
-        result["url"] = df['URL'].iloc[i]
+        result["place_id"] = place_id
+        result["url"] = url
         results.append(result)
     else:
         failed_geocodes.append(geocode_val)
@@ -68,8 +71,8 @@ if len(results) > 0:
     )
 
 
-    gdf.to_file('../public/gis/eb_locations_all.geojson', driver='GeoJSON')
-    gdf.to_csv('map_locations.csv', index=False)
+    gdf.to_file('../public/gis/eb_locations_mendel.geojson', driver='GeoJSON')
+    #gdf.to_csv('map_locations.csv', index=False)
 # next work on converting to geojson
 # df to geodf then geojson with geopandas?
 # store and reference in app and compare the twofiles

@@ -6,7 +6,7 @@ import { wireCommonMap } from "./MapCommon";
 import type { Article } from "../data/articles";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-export default function MappingDynamic({ article }: { article: Article }) {
+export default function MappingDynamic({ article, place_id }: { article: Article, place_id: string }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function MappingDynamic({ article }: { article: Article }) {
         : "https://api.maptiler.com/maps/019981be-496a-7bae-b225-a418c34d5d49/style.json?key=yyuND61jYywaYRD458Fx";
 
     const map = new maplibregl.Map({ container: ref.current, style, attributionControl: false });
-    wireCommonMap(map, article);
+    wireCommonMap(map, article, place_id);
     return () => map.remove();
   }, [article]);
 

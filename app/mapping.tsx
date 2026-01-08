@@ -3,14 +3,14 @@ import MappingStaticToDynamic from "./Mapping/MappingStaticToDynamic";
 import MappingStaticToPopup from "./Mapping/MappingStaticToPopup";
 import type { Article } from "./data/articles";
 
-export default function Mapping({ article }: { article: Article }) {
+export default function Mapping({ article, place_id }: { article: Article, place_id: string }) {
   switch (article.type) {
     case "interactive":
-      return <MappingDynamic article={article} />;
+      return <MappingDynamic article={article} place_id={place_id} />;
     case "static-preview":
-      return <MappingStaticToDynamic article={article} />;
+      return <MappingStaticToDynamic article={article} place_id={place_id} />;
     case "popup":
-      return <MappingStaticToPopup article={article} />;
+      return <MappingStaticToPopup article={article} place_id={place_id} />;
     default:
       return null;
   }

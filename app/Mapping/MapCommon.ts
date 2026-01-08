@@ -5,14 +5,25 @@ import maplibregl, {
 import type { Article } from "../data/articles";
 
 interface FeatureProperties {
+  place_id?: string;
   title?: string;
+  identifier?: string;
+  name?: string;
+  bbox?: string;
   url?: string;
   geom?: string;
   cluster_id?: number;
   [key: string]: unknown;
 }
 
-export function wireCommonMap(map: maplibregl.Map, article: Article) {
+export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: string) {
+
+  let isPanning = false;
+  let panStartTs = 0;
+  let popupHoverStart = 0;
+  let popupHoverCount = 0;
+  let popupHoverMeta: { title?: string; url?: string } = {};
+
   map.on("load", async () => {
     // Allow keyboard focus
     map.getCanvas().tabIndex = 0;
@@ -25,9 +36,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
     map.on("wheel", markInteraction);
     map.on("touchstart", markInteraction);
 
-    // ---------------------------------------------------------
-    // 1. Language Label Support
-    // ---------------------------------------------------------
     const labelLayers = [
       "Continent labels",
       "Country labels",
@@ -53,20 +61,43 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       }
     });
 
-    // ---------------------------------------------------------
-    // 2. Cluster Source
-    // ---------------------------------------------------------
     map.addSource("eb", {
       type: "geojson",
-      data: "/gis/eb_locations_all.geojson",
+      data: "/gis/eb_locations_mendel.geojson",
       cluster: true,
       clusterMaxZoom: 9,
       clusterRadius: 40,
     });
 
-    // ---------------------------------------------------------
-    // 3. Cluster Layers
-    // ---------------------------------------------------------
+    function waitForSource(map: maplibregl.Map, sourceId: string) {
+      return new Promise<void>((resolve) => {
+        const handler = () => {
+          if (map.isSourceLoaded(sourceId)) {
+            map.off("sourcedata", handler);
+            resolve();
+          }
+        };
+        map.on("sourcedata", handler);
+        handler();
+      });
+    }
+
+    function featureToLngLat(f: any): [number, number] {
+      // GeoJSON point: [lng, lat]
+      return (f.geometry as GeoJSON.Point).coordinates as [number, number];
+    }
+
+    async function findFeatureByPlaceId(map: maplibregl.Map, sourceId: string, placeId: string) {
+      await waitForSource(map, sourceId);
+
+      const hits = map.querySourceFeatures(sourceId, {
+        filter: ["==", ["get", "place_id"], placeId],
+      });
+
+      return hits.find((f) => !(f.properties as any)?.point_count) ?? null;
+    }
+
+
     map.addLayer({
       id: "clusters",
       type: "circle",
@@ -108,9 +139,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       paint: { "text-color": "#333" },
     });
 
-    // ---------------------------------------------------------
-    // 4. Individual Points
-    // ---------------------------------------------------------
     map.addLayer({
       id: "unclustered-point",
       type: "circle",
@@ -124,9 +152,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-    // ---------------------------------------------------------
-    // 5. Cluster Expansion
-    // ---------------------------------------------------------
     map.on("click", "clusters", async (e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) => {
       markInteraction();
 
@@ -145,9 +170,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       map.easeTo({ center: coords, zoom });
     });
 
-    // ---------------------------------------------------------
-    // 6. Highlight Pin
-    // ---------------------------------------------------------
     map.addSource("highlight", {
       type: "geojson",
       data: {
@@ -183,43 +205,69 @@ export function wireCommonMap(map: maplibregl.Map, article: Article) {
       },
     });
 
-  // ---------------------------------------------------------
-// 7. Stable Hover Popup System (Correct Feature-Based Hover)
-// ---------------------------------------------------------
 
-let activePopup: maplibregl.Popup | null = null;
-let isOverSymbol = false;
-let isOverPopup = false;
-let closeTimer: ReturnType<typeof setTimeout> | null = null;
+  let activePopup: maplibregl.Popup | null = null;
+  let isOverSymbol = false;
+  let isOverPopup = false;
+  let closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Track entering popup DOM
-document.addEventListener("mouseover", (e) => {
-  if ((e.target as HTMLElement).closest(".popup-card")) {
-    isOverPopup = true;
-  }
-});
+  const getPopupMeta = (el: HTMLElement) => ({
+    title: el.getAttribute("data-title") || undefined,
+    url: el.getAttribute("data-url") || undefined,
+  });
+  // Track entering popup DOM
+  document.addEventListener("mouseover", (e) => {
+    if ((e.target as HTMLElement).closest(".popup-card")) {
+      isOverPopup = true;
+    }
+
+    const card = (e.target as HTMLElement).closest(".popup-card") as HTMLElement | null;
+    if (!card) return;
+    popupHoverStart = Date.now();
+    popupHoverMeta = getPopupMeta(card);
+
+    track({
+      name: "popup_hover_enter",
+      ts: popupHoverStart,
+      featureTitle: popupHoverMeta.title,
+      featureUrl: popupHoverMeta.url,
+    });
+  });
 
 // Track leaving popup DOM
-document.addEventListener("mouseout", (e) => {
-  if ((e.target as HTMLElement).closest(".popup-card")) {
-    isOverPopup = false;
-    schedulePopupClose();
-  }
+  document.addEventListener("mouseout", (e) => {
+    if ((e.target as HTMLElement).closest(".popup-card")) {
+      isOverPopup = false;
+      schedulePopupClose();
+    }
+
+  // const ts = Date.now();
+  // const dwellMs = popupHoverStart ? ts - popupHoverStart : 0;
+
+  // track({
+  //   name: "popup_hover_leave",
+  //   ts,
+  //   dwellMs,
+  //   featureTitle: popupHoverMeta.title,
+  //   featureUrl: popupHoverMeta.url,
+  // });
+
+  // popupHoverStart = 0;
+  popupHoverMeta = {};
 });
 
-const schedulePopupClose = () => {
-  if (closeTimer) clearTimeout(closeTimer);
-  closeTimer = setTimeout(() => {
-    if (!isOverSymbol && !isOverPopup && activePopup) {
-      activePopup.remove();
-      activePopup = null;
-    }
-  }, 150);
-};
 
-// -----------------------------------------------
-// Helper to attach proper hover logic
-// -----------------------------------------------
+
+  const schedulePopupClose = () => {
+    if (closeTimer) clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => {
+      if (!isOverSymbol && !isOverPopup && activePopup) {
+        activePopup.remove();
+        activePopup = null;
+      }
+    }, 150);
+  };
+
 function attachHoverHandlers(layerId: string) {
   map.on(
     "mouseenter",
@@ -234,8 +282,8 @@ function attachHoverHandlers(layerId: string) {
       // Get coordinates
       let lngLat: [number, number];
       if (props.geom) {
-        const { lat, lng } = JSON.parse(props.geom);
-        lngLat = [lng, lat];
+        lngLat = (e.features![0].geometry as GeoJSON.Point).coordinates as [number, number];
+
       } else {
         // fallback for highlight pin
         lngLat = (e.features[0].geometry as GeoJSON.Point)
@@ -253,7 +301,7 @@ function attachHoverHandlers(layerId: string) {
       })
         .setLngLat(lngLat)
         .setHTML(`
-          <div class="popup-card" role="dialog" aria-label="Map popup for ${props.title}">
+          <div class="popup-card" data-title="${props.title ?? ""}" data-url="${props.url ?? ""}" role="dialog" aria-label="Map popup for ${props.title}">
                 <div class="popup-title" aria-label="Map popup for ${props.title}">${props.title}</div>
                 <a href="${props.url}" target="_blank" class="popup-link">
                   <strong>Read Article</strong>
@@ -274,32 +322,37 @@ function attachHoverHandlers(layerId: string) {
 attachHoverHandlers("unclustered-point");
 attachHoverHandlers("highlight-pin");
 
+const hit = await findFeatureByPlaceId(map, "eb", place_id);
 
-    // ---------------------------------------------------------
-    // 8. Auto-open popup on load
-    // ---------------------------------------------------------
-    const [lng, lat] = article.lnglat;
+if (hit) {
+  const props = hit.properties as FeatureProperties;
+  const lngLat = featureToLngLat(hit);
+
 
     const initialPopup = new maplibregl.Popup({
       offset: [20, 0],
       anchor: "left",
     })
-      .setLngLat([lng, lat])
+      .setLngLat(lngLat)
       .setHTML(`
-       <div class="popup-card" role="dialog" aria-label="Map popup for ${article.title}">
-          <div class="popup-title">${article.title}</div>
-          <a href="${article.url}" target="_blank" class="popup-link">
+       <div class="popup-card" data-title="${props.title ?? ""}"
+       data-url="${props.url ?? ""}"
+       role="dialog" role="dialog" aria-label="Map popup for ${props.title}">
+          <div class="popup-title">${props.title}</div>
+          <a href="${props.url}" target="_blank" class="popup-link">
             <strong>Read Article</strong>
           </a>
         </div>
       `)
       .addTo(map);
 
-    // ---------------------------------------------------------
-    // 9. Zoom to location
-    // ---------------------------------------------------------
-    if (article.bbox) {
-      map.fitBounds(article.bbox as maplibregl.LngLatBoundsLike, {
+    const bbox = (props as any).bbox;
+    if (bbox?.southwest && bbox?.northeast) {
+    map.fitBounds(
+      [
+        [bbox.southwest.lng, bbox.southwest.lat],
+        [bbox.northeast.lng, bbox.northeast.lat],
+      ], {
         padding: 60,
         maxZoom: 10,
         duration: 2500,
@@ -307,11 +360,37 @@ attachHoverHandlers("highlight-pin");
       });
     } else {
       map.easeTo({
-        center: article.lnglat as [number, number],
+        center: lngLat as [number, number],
         zoom: 9,
         duration: 2500,
         easing: (t) => t * t * (3 - 2 * t),
       });
     }
+  }
+
+  function track(data: Record<string, unknown>) {
+    // Placeholder tracking function
+    // console.log("Map Interaction Track:", data);
+  }
+
+
+map.on("dragstart", () => {
+  isPanning = true;
+  panStartTs = Date.now();
+  // const { zoom, center } = getMapState(map);
+  track({ name: "pan_start", ts: panStartTs });
+});
+
+    map.on("dragend", () => {
+      if (!isPanning) return;
+      isPanning = false;
+      const ts = Date.now();
+      // const { zoom, center } = getMapState(map);
+      track({
+        name: "pan_end",
+        ts,
+        durationMs: ts - panStartTs,
+      });
+    });
   });
 }

@@ -6,7 +6,7 @@ import { wireCommonMap } from "./MapCommon";
 import type { Article } from "../data/articles";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-export default function MappingStaticToPopup({ article }: { article: Article }) {
+export default function MappingStaticToPopup({ article, place_id }: { article: Article, place_id: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -25,7 +25,7 @@ export default function MappingStaticToPopup({ article }: { article: Article }) 
     if (!open || !ref.current) return;
     const style = `https://api.maptiler.com/maps/${mapId}/style.json?key=${key}`;
     const map = new maplibregl.Map({ container: ref.current, style, attributionControl: false });
-    wireCommonMap(map, article);
+    wireCommonMap(map, article, place_id);
     return () => map.remove();
   }, [open, article]);
 

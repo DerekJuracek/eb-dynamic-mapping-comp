@@ -8,7 +8,7 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold mb-6">My Article Website</h1>
       <div className="space-y-4">
         {articles.map(article => (
-          <ArticleCard key={article.id} article={article} />
+          <ArticleCard key={article.place_id} article={article} />
         ))}
       </div>
     </main>

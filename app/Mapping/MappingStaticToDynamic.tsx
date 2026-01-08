@@ -6,7 +6,7 @@ import { wireCommonMap } from "./MapCommon";
 import type { Article } from "../data/articles";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-export default function MappingStaticToDynamic({ article }: { article: Article }) {
+export default function MappingStaticToDynamic({ article, place_id }: { article: Article, place_id: string }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [isInteractive, setIsInteractive] = useState(false);
 
@@ -25,7 +25,7 @@ export default function MappingStaticToDynamic({ article }: { article: Article }
     if (!isInteractive || !mapRef.current) return;
     const style = `https://api.maptiler.com/maps/${mapId}/style.json?key=${key}`;
     const map = new maplibregl.Map({ container: mapRef.current, style, attributionControl: false });
-    wireCommonMap(map, article);
+    wireCommonMap(map, article, place_id);
     return () => map.remove();
   }, [isInteractive, article]);
 
