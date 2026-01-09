@@ -167,29 +167,34 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
 
       map.easeTo({ center: coords, zoom });
     });
+    const hit = byPlaceId.get(place_id) ?? null;
 
-    map.addSource("highlight", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: { type: "Point", coordinates: article.lnglat },
-            properties: {
-              title: article.title,
-              url: article.url,
-              excerpt: article.excerpt,
+
+    if (hit) {
+      const props = hit.properties as FeatureProperties;
+      const lngLat = (hit.geometry as GeoJSON.Point).coordinates as [number, number];
+
+      // ✅ highlight source based on GEOJSON hit
+      map.addSource("highlight", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              geometry: { type: "Point", coordinates: lngLat },
+              properties: {
+                title: props.title,
+                url: props.url,
+                place_id: props.place_id,
+              },
             },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      });
 
     const pinImage = await map.loadImage("/icons/brand_pin_large.png");
-    if (!map.hasImage("thumbtack-pin")) {
-      map.addImage("thumbtack-pin", pinImage.data);
-    }
+    if (!map.hasImage("thumbtack-pin")) map.addImage("thumbtack-pin", pinImage.data);
 
     map.addLayer({
       id: "highlight-pin",
@@ -202,6 +207,18 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
         "icon-allow-overlap": true,
       },
     });
+
+    new maplibregl.Popup({ offset: [20, 0], anchor: "left" })
+      .setLngLat(lngLat)
+      .setHTML(`
+        <div class="popup-card" data-title="${props.title ?? ""}" data-url="${props.url ?? ""}">
+          <div class="popup-title">${props.title ?? ""}</div>
+          <a href="${props.url ?? "#"}" target="_blank" class="popup-link"><strong>Read Article</strong></a>
+        </div>
+      `)
+      .addTo(map);
+}
+
 
 
   let activePopup: maplibregl.Popup | null = null;
@@ -232,7 +249,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
     });
   });
 
-// Track leaving popup DOM
   document.addEventListener("mouseout", (e) => {
     if ((e.target as HTMLElement).closest(".popup-card")) {
       isOverPopup = false;
@@ -303,8 +319,6 @@ function attachHoverHandlers(layerId: string) {
   // Attach for both layers
   attachHoverHandlers("unclustered-point");
   attachHoverHandlers("highlight-pin");
-
-  const hit = byPlaceId.get(place_id) ?? null;
 
   if (hit) {
     const props = hit.properties as FeatureProperties;
