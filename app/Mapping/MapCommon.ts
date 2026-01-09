@@ -16,7 +16,29 @@ interface FeatureProperties {
   [key: string]: unknown;
 }
 
-export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: string) {
+type EBFeature = GeoJSON.Feature<GeoJSON.Point, any>;
+type EBFC = GeoJSON.FeatureCollection<GeoJSON.Point, any>;
+
+let ebCache: { fc: EBFC; byPlaceId: Map<string, EBFeature> } | null = null;
+
+async function loadEbIndex(): Promise<{ fc: EBFC; byPlaceId: Map<string, EBFeature> }> {
+  if (ebCache) return ebCache;
+
+  const res = await fetch("/gis/eb_locations_mendel.geojson");
+  const fc = (await res.json()) as EBFC;
+
+  const byPlaceId = new Map<string, EBFeature>();
+  for (const f of fc.features as EBFeature[]) {
+    const pid = f.properties?.place_id;
+    if (typeof pid === "string" && pid) byPlaceId.set(pid, f);
+  }
+
+  ebCache = { fc, byPlaceId };
+  return ebCache;
+}
+
+
+export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: string, article_type: string) {
 
   let isPanning = false;
   let panStartTs = 0;
@@ -25,7 +47,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
   let popupHoverMeta: { title?: string; url?: string } = {};
 
   map.on("load", async () => {
-    // Allow keyboard focus
     map.getCanvas().tabIndex = 0;
 
     // Tracks whether user interacted before enabling hover popups
@@ -61,42 +82,19 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
       }
     });
 
+    const { fc, byPlaceId } = await loadEbIndex();
+
     map.addSource("eb", {
       type: "geojson",
-      data: "/gis/eb_locations_mendel.geojson",
+      data: fc,          
       cluster: true,
       clusterMaxZoom: 9,
       clusterRadius: 40,
     });
 
-    function waitForSource(map: maplibregl.Map, sourceId: string) {
-      return new Promise<void>((resolve) => {
-        const handler = () => {
-          if (map.isSourceLoaded(sourceId)) {
-            map.off("sourcedata", handler);
-            resolve();
-          }
-        };
-        map.on("sourcedata", handler);
-        handler();
-      });
-    }
-
     function featureToLngLat(f: any): [number, number] {
-      // GeoJSON point: [lng, lat]
       return (f.geometry as GeoJSON.Point).coordinates as [number, number];
     }
-
-    async function findFeatureByPlaceId(map: maplibregl.Map, sourceId: string, placeId: string) {
-      await waitForSource(map, sourceId);
-
-      const hits = map.querySourceFeatures(sourceId, {
-        filter: ["==", ["get", "place_id"], placeId],
-      });
-
-      return hits.find((f) => !(f.properties as any)?.point_count) ?? null;
-    }
-
 
     map.addLayer({
       id: "clusters",
@@ -240,19 +238,6 @@ export function wireCommonMap(map: maplibregl.Map, article: Article, place_id: s
       isOverPopup = false;
       schedulePopupClose();
     }
-
-  // const ts = Date.now();
-  // const dwellMs = popupHoverStart ? ts - popupHoverStart : 0;
-
-  // track({
-  //   name: "popup_hover_leave",
-  //   ts,
-  //   dwellMs,
-  //   featureTitle: popupHoverMeta.title,
-  //   featureUrl: popupHoverMeta.url,
-  // });
-
-  // popupHoverStart = 0;
   popupHoverMeta = {};
 });
 
@@ -285,15 +270,12 @@ function attachHoverHandlers(layerId: string) {
         lngLat = (e.features![0].geometry as GeoJSON.Point).coordinates as [number, number];
 
       } else {
-        // fallback for highlight pin
         lngLat = (e.features[0].geometry as GeoJSON.Point)
           .coordinates as [number, number];
       }
 
-      // Remove any prior popup
       if (activePopup) activePopup.remove();
 
-      // Create popup
       activePopup = new maplibregl.Popup({
         closeButton: false,
         offset: [20, 0],
@@ -318,47 +300,82 @@ function attachHoverHandlers(layerId: string) {
   });
 }
 
-// Attach for both layers
-attachHoverHandlers("unclustered-point");
-attachHoverHandlers("highlight-pin");
+  // Attach for both layers
+  attachHoverHandlers("unclustered-point");
+  attachHoverHandlers("highlight-pin");
 
-const hit = await findFeatureByPlaceId(map, "eb", place_id);
+  const hit = byPlaceId.get(place_id) ?? null;
 
-if (hit) {
-  const props = hit.properties as FeatureProperties;
-  const lngLat = featureToLngLat(hit);
+  if (hit) {
+    const props = hit.properties as FeatureProperties;
+    const lngLat = featureToLngLat(hit);
 
 
-    const initialPopup = new maplibregl.Popup({
-      offset: [20, 0],
-      anchor: "left",
-    })
-      .setLngLat(lngLat)
-      .setHTML(`
-       <div class="popup-card" data-title="${props.title ?? ""}"
-       data-url="${props.url ?? ""}"
-       role="dialog" role="dialog" aria-label="Map popup for ${props.title}">
-          <div class="popup-title">${props.title}</div>
-          <a href="${props.url}" target="_blank" class="popup-link">
-            <strong>Read Article</strong>
-          </a>
-        </div>
-      `)
-      .addTo(map);
+      const initialPopup = new maplibregl.Popup({
+        offset: [20, 0],
+        anchor: "left",
+      })
+        .setLngLat(lngLat)
+        .setHTML(`
+        <div class="popup-card" data-title="${props.title ?? ""}"
+        data-url="${props.url ?? ""}"
+        role="dialog" role="dialog" aria-label="Map popup for ${props.title}">
+            <div class="popup-title">${props.title}</div>
+            <a href="${props.url}" target="_blank" class="popup-link">
+              <strong>Read Article</strong>
+            </a>
+          </div>
+        `)
+        .addTo(map);
 
-    const bbox = (props as any).bbox;
-    if (bbox?.southwest && bbox?.northeast) {
-    map.fitBounds(
-      [
-        [bbox.southwest.lng, bbox.southwest.lat],
-        [bbox.northeast.lng, bbox.northeast.lat],
-      ], {
-        padding: 60,
-        maxZoom: 10,
-        duration: 2500,
-        easing: (t) => t * t * (3 - 2 * t),
-      });
+        
+       
+
+
+if (article_type != "event" && article_type != "poi" && props.bbox) {
+    let bboxRaw: any = (props as any).bbox;
+    if (typeof bboxRaw === "string") {
+      try {
+        bboxRaw = JSON.parse(bboxRaw);
+      } catch {
+        const parts = bboxRaw.split(",").map((s: string) => s.trim());
+        if (parts.length === 4 && parts.every(Boolean)) {
+          bboxRaw = parts.map(Number);
+        }
+      }
+    }
+
+    let swLng: number | undefined, swLat: number | undefined, neLng: number | undefined, neLat: number | undefined;
+
+    if (Array.isArray(bboxRaw) && bboxRaw.length === 4) {
+      [swLng, swLat, neLng, neLat] = bboxRaw.map(Number);
+    } else if (bboxRaw && typeof bboxRaw === "object") {
+      if (bboxRaw.southwest && bboxRaw.northeast) {
+        swLng = Number(bboxRaw.southwest.lng ?? bboxRaw.southwest[0]);
+        swLat = Number(bboxRaw.southwest.lat ?? bboxRaw.southwest[1]);
+        neLng = Number(bboxRaw.northeast.lng ?? bboxRaw.northeast[0]);
+        neLat = Number(bboxRaw.northeast.lat ?? bboxRaw.northeast[1]);
+      } else if (bboxRaw.bbox && Array.isArray(bboxRaw.bbox) && bboxRaw.bbox.length === 4) {
+        [swLng, swLat, neLng, neLat] = bboxRaw.bbox.map(Number);
+      }
+    }
+
+    const invalid = [swLng, swLat, neLng, neLat].some((v) => v == null || Number.isNaN(v));
+    if (!invalid) {
+      map.fitBounds(
+        [
+          [swLng as number, swLat as number],
+          [neLng as number, neLat as number],
+        ],
+        {
+          padding: 60,
+          maxZoom: 10,
+          duration: 2500,
+          easing: (t) => t * t * (3 - 2 * t),
+        }
+      );
     } else {
+      // fallback: center on point (ensure lngLat is [lng, lat] numbers)
       map.easeTo({
         center: lngLat as [number, number],
         zoom: 9,
@@ -366,20 +383,28 @@ if (hit) {
         easing: (t) => t * t * (3 - 2 * t),
       });
     }
+  } else {
+    map.easeTo({
+      center: lngLat as [number, number],
+      zoom: 9,
+      duration: 2500,
+      easing: (t) => t * t * (3 - 2 * t),
+    });
   }
+}
 
-  function track(data: Record<string, unknown>) {
-    // Placeholder tracking function
-    // console.log("Map Interaction Track:", data);
-  }
+    function track(data: Record<string, unknown>) {
+      // Placeholder tracking function
+      // console.log("Map Interaction Track:", data);
+    }
 
 
-map.on("dragstart", () => {
-  isPanning = true;
-  panStartTs = Date.now();
-  // const { zoom, center } = getMapState(map);
-  track({ name: "pan_start", ts: panStartTs });
-});
+    map.on("dragstart", () => {
+      isPanning = true;
+      panStartTs = Date.now();
+      // const { zoom, center } = getMapState(map);
+      track({ name: "pan_start", ts: panStartTs });
+    });
 
     map.on("dragend", () => {
       if (!isPanning) return;
